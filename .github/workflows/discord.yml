@@ -15,11 +15,3 @@ jobs:
         DISCORD_USERNAME: The Reaper
         DISCORD_AVATAR: https://i.imgur.com/0l33Z8s.png
       uses: Ilshidur/action-discord@master
-      with:
-        args: 'Nova commit em: {{ EVENT_PAYLOAD.repository.full_name }}'
-    - name: Notificação Discord
-      env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        DISCORD_USERNAME: The Reaper
-        DISCORD_AVATAR: https://i.imgur.com/0l33Z8s.png
-      uses: Ilshidur/action-discord@master
