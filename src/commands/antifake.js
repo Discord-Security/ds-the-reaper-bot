@@ -102,7 +102,7 @@ module.exports = {
         break;
       }
       case 'punição': {
-        const action = interaction.options.getString('ação').value;
+        const action = interaction.options.get('ação').value;
         client.db.Guilds.findOne(
           {
             _id: interaction.guild.id,
