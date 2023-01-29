@@ -18,4 +18,4 @@ jobs:
       password: ${{secrets.FTP_PASSWORD}}
       port: 2022
       uploads: |
-      ./ => ./
+        ./ => ./
