@@ -32,6 +32,7 @@ const guildSchema = new Schema({
   approved: { type: Boolean, default: false },
   roleId: { type: String },
   channelsLockdown: { type: Array },
+  channelsAutopublish: { type: Array },
   logs: {
     deletedMessage: { type: String },
     editedMessage: { type: String },
