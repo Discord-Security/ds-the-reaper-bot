@@ -8,13 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Fast FTP Action
-      uses: anvil-solutions/Fast-FTP-Action@2.1.3
-      with:
-        server: nbg1.rolledhost.net
-        port: 2022
-        username: vwlztcz3ibanoqyspb3m.c35f39d5
-        password: ${{ secrets.FTP_PASSWORD }}
-        method: sftp
+- uses: actions/checkout@v3
+- uses: Dylan700/sftp-upload-action@latest
+with:
+  server: nbg1.rolledhost.net
+  username: vwlztcz3ibanoqyspb3m.c35f39d5
+  passphrase: ${{secrets.FTP_PASSWORD}}
+  port: 2022
+  uploads: |
+    ./ => ./
