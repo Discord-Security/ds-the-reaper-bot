@@ -42,7 +42,7 @@ module.exports = async (client, message) => {
   }
 
   if (message.guild.id === process.env.GUILD_ID) {
-    if (!message.member.permissions.has('Administrator')) return;
+    if (message.member && !message.member.permissions.has('Administrator')) return;
     if (message.content.startsWith(`<@${client.user.id}>`)) {
       const embed = new discord.EmbedBuilder()
         .setTitle('Reaper Control - A fast and efficient control')
