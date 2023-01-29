@@ -11,6 +11,8 @@ module.exports = async (client, message) => {
     message.crosspost();
   }
 
+  if (message.author.bot) return;
+
   if (message.guild.id === '1025774982980186183') {
     client.channels.cache
       .get('1037138353369382993')
@@ -40,7 +42,7 @@ module.exports = async (client, message) => {
   }
 
   if (message.guild.id === process.env.GUILD_ID) {
-    if (!message.member && message.member.permissions.has('Administrator')) return;
+    if (!message.member.permissions.has('Administrator')) return;
     if (message.content.startsWith(`<@${client.user.id}>`)) {
       const embed = new discord.EmbedBuilder()
         .setTitle('Reaper Control - A fast and efficient control')
