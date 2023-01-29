@@ -75,7 +75,7 @@ module.exports = {
             interaction.reply({
               content: `Aqui está a lista de canais que utilizam o sistema de autopublicar:\n\n${doc.channelsAutopublish
                 .map(c => {
-                  return `<#${c.id}>`;
+                  return `<#${c}>`;
                 })
                 .join('\n')}`,
               ephemeral: true,
