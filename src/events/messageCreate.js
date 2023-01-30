@@ -30,10 +30,21 @@ module.exports = async (client, message) => {
           partners: 1,
         }).save();
       }
-      const count = await client.db.Partners.countDocuments({
+      const partners = await client.db.Partners.find({
         serverId: message.guild.id,
       }).sort({ partners: 1 });
-      const membroRank = count.indexOf(db) + 1;
+      const partner = await client.db.Partners.findOne({
+        _id: id,
+        serverId: message.guild.id,
+      });
+      const membroRank =
+        partners.reduce((prev, curr) => {
+          if (curr.partners >= partner.partners) {
+            return prev + 1;
+          }
+          return prev;
+        }, 0) + 1;
+      console.log(membroRank);
 
       const idRegex = /<@(\d+)>/;
       const match = message.content.match(idRegex);
