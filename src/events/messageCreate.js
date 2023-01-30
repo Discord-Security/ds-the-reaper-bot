@@ -30,81 +30,10 @@ module.exports = async (client, message) => {
           partners: 1,
         }).save();
       }
-      let membroRank;
-      await client.db.Partners.aggregate(
-        [
-          {
-            $match: {
-              _id: id,
-              serverId: message.guild.id,
-            },
-          },
-          {
-            $group: {
-              _id: '$_id',
-              partners: { $sum: 1 },
-            },
-          },
-          {
-            $sort: { partners: -1 },
-          },
-          {
-            $group: {
-              _id: null,
-              partners: { $push: '$partners' },
-            },
-          },
-          {
-            $unwind: '$partners',
-          },
-          {
-            $group: {
-              _id: '$_id',
-              rank: { $sum: 1 },
-            },
-          },
-          {
-            $match: {
-              rank: {
-                $lte: {
-                  $indexOfArray: ['$partners', 3],
-                },
-              },
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              rank: {
-                $arrayElemAt: [
-                  {
-                    $map: {
-                      input: {
-                        $filter: {
-                          input: '$partners',
-                          as: 'partner',
-                          cond: { $eq: ['$$partner._id', id] },
-                        },
-                      },
-                      as: 'filteredPartner',
-                      in: {
-                        $indexOfArray: ['$partners', '$$filteredPartner'],
-                      },
-                    },
-                  },
-                  0,
-                ],
-              },
-            },
-          },
-        ],
-        function (err, result) {
-          if (err) throw err;
-          console.log(result)
-          membroRank = result[0].rank;
-        },
-      );
-
+      const count = await client.db.Partners.countDocuments({
+        serverId: message.guild.id,
+      }).sort({ partners: 1 });
+      const membroRank = count.indexOf(db) + 1;
 
       const idRegex = /<@(\d+)>/;
       const match = message.content.match(idRegex);
