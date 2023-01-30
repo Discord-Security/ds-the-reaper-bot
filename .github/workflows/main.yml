@@ -19,3 +19,8 @@ jobs:
         port: 2022
         uploads: |
           ./ => ./
+        ignore: |
+          *.git
+          */**/*git*
+          ./.vscode
+          
