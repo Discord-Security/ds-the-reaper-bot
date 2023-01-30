@@ -35,7 +35,7 @@ module.exports = async (client, message) => {
         [
           {
             $match: {
-              _id: '',
+              _id: id,
               serverId: 3,
             },
           },
@@ -71,7 +71,7 @@ module.exports = async (client, message) => {
         ],
         function (err, result) {
           if (err) throw err;
-          console.log(result)
+          console.log(result);
           membroRank = result.rank;
         },
       );
