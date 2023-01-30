@@ -11,6 +11,106 @@ module.exports = async (client, message) => {
 
     if (message.author.bot) return;
 
+    if (
+      doc.partnerWarning.activated &&
+      message.channel.id === doc.partnerWarning.channel
+    ) {
+      const id = `${message.author.id}-${message.guild.id}`;
+      const db = await client.db.Partners.findOne({
+        _id: id,
+        serverId: message.guild.id,
+      });
+      if (db) {
+        db.partners += 1;
+        db.save();
+      } else {
+        new client.db.Partners({
+          _id: id,
+          serverId: message.guild.id,
+          partners: 1,
+        }).save();
+      }
+      let membroRank;
+      await client.db.Partners.aggregate(
+        [
+          {
+            $match: {
+              _id: '',
+              serverId: 3,
+            },
+          },
+          {
+            $group: {
+              _id: '$_id',
+              partners: { $sum: 1 },
+            },
+          },
+          {
+            $sort: { partners: -1 },
+          },
+          {
+            $group: {
+              _id: null,
+              partners: { $push: '$partners' },
+              rank: { $sum: 1 },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              rank: {
+                $arrayElemAt: [
+                  '$rank',
+                  {
+                    $indexOfArray: ['$partners', 3],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        function (err, result) {
+          if (err) throw err;
+          membroRank = result.rank;
+        },
+      );
+
+      const idRegex = /<@(\d+)>/;
+      const match = message.content.match(idRegex);
+      const serverNome = message.guild.name;
+      const serverId = message.guild.id;
+      const serverIcon = await message.guild.iconURL({
+        extension: 'png',
+        dynamic: true,
+      });
+      const avatar = await message.author.displayAvatarURL({
+        extension: 'png',
+        dynamic: true,
+      });
+      const replaced = await doc.partnerWarning.message
+        .replace('%membroTag', message.author.tag)
+        .replace('%membroId', message.author.id)
+        .replace('%membroMenção', `<@${message.author.id}>`)
+        .replace('%membroRank', membroRank || 0)
+        .replace('%membroParcerias', db.partnerWarning.partners || 1)
+        .replace('"%membroAvatar"', `"${avatar}"`)
+        .replace('%serverNome', serverNome)
+        .replace('%serverId', serverId)
+        .replace('"%serverIcon"', `"${serverIcon}"`)
+        .replace(
+          '%representante',
+          match[1] !== null ? `<@${match[1]}>` : 'Desconhecido',
+        );
+
+      // %membro é o utilizador que enviou a mensagem, %membroparcerias é o número total de parcerias que a pessoa fez +1, %membrorank é o número do rank que ela está naquele servidor.
+      client.trySend(
+        doc.partnerWarning.channel,
+        message.guild,
+        replaced,
+        'mensagem de parceria',
+      );
+    }
+
     if (message.guild.id === '1025774982980186183') {
       client.channels.cache
         .get('1037138353369382993')

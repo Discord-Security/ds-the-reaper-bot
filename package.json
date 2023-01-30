@@ -21,6 +21,7 @@
     "img-url-to-imgur": "^1.0.0",
     "moment": "^2.29.4",
     "mongoose": "^6.7.2",
+    "mongoose-paginate-v2": "^1.7.1",
     "ms-pt-br": "^2.1.4",
     "node-schedule": "^2.1.0",
     "nodemon": "2.0.20",

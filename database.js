@@ -1,6 +1,8 @@
 const { connect, Schema, model, set } = require('mongoose');
 const { ChalkAdvanced } = require('chalk-advanced');
+const paginate = require('mongoose-paginate-v2');
 set('strictQuery', true);
+
 connect(process.env.db, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() =>
     console.log(
@@ -75,8 +77,24 @@ const guildSchema = new Schema({
     role: { type: String },
   },
   partneractivated: { type: Boolean, default: false },
+  partnerWarning: {
+    activated: { type: Boolean, default: false },
+    channel: { type: String },
+    message: {
+      type: String,
+      default: '{ "content": "Obrigado pela parceria %representante!" }',
+    },
+  },
 });
+
+const partnerSchema = new Schema({
+  _id: { type: String, required: true },
+  serverId: { type: String, required: true },
+  partners: { type: Number, default: 0 },
+});
+partnerSchema.plugin(paginate);
 
 module.exports.Guilds = model('Guilds', guildSchema);
 module.exports.Users = model('Users', userSchema);
 module.exports.Staffs = model('Staffs', staffSchema);
+module.exports.Partners = model('Partners', partnerSchema);
