@@ -107,7 +107,7 @@ module.exports = async (client, message) => {
       client.trySend(
         doc.partnerWarning.channel,
         message.guild,
-        replaced,
+        JSON.parse(replaced),
         'mensagem de parceria',
       );
     }
