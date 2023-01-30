@@ -55,38 +55,36 @@ module.exports = async (client, message) => {
             },
           },
           {
-            $project: {
+            $unwind: '$partners',
+          },
+          {
+            $group: {
+              _id: '$_id',
+              rank: { $sum: 1 },
+            },
+          },
+          {
+            $match: {
               rank: {
-                $arrayElemAt: [
-                  '$partners',
-                  {
-                    $indexOfArray: [
-                      '$partners',
-                      {
-                        $reduce: {
-                          input: '$partners',
-                          initialValue: -1,
-                          in: {
-                            $cond: [
-                              { $eq: ['$$this', 3] },
-                              { $sum: ['$$value', 1] },
-                              '$$value',
-                            ],
-                          },
-                        },
-                      },
-                    ],
-                  },
-                ],
+                $lte: {
+                  $indexOfArray: ['$partners', 3],
+                },
               },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              rank: '$rank',
             },
           },
         ],
         function (err, result) {
           if (err) throw err;
-          membroRank = result[0].rank + 1;
+          membroRank = result[0].rank;
         },
       );
+
 
       const idRegex = /<@(\d+)>/;
       const match = message.content.match(idRegex);
