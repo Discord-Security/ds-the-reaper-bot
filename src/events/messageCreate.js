@@ -92,7 +92,7 @@ module.exports = async (client, message) => {
         .replace('%membroId', message.author.id)
         .replace('%membroMenção', `<@${message.author.id}>`)
         .replace('%membroRank', membroRank || 0)
-        .replace('%membroParcerias', db.partnerWarning.partners || 1)
+        .replace('%membroParcerias', db.partners || 1)
         .replace('"%membroAvatar"', `"${avatar}"`)
         .replace('%serverNome', serverNome)
         .replace('%serverId', serverId)
