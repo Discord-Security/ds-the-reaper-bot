@@ -60,7 +60,7 @@ module.exports = async (client, message) => {
               _id: 0,
               rank: {
                 $arrayElemAt: [
-                  '$rank',
+                  ['$rank'],
                   {
                     $indexOfArray: ['$partners', 3],
                   },

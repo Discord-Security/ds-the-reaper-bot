@@ -96,8 +96,9 @@ module.exports = {
               if (waifu.docs[0]) {
                 const fields = waifu.docs.map((w, index) => ({
                   name: `${waifu.pagingCounter + index}. ${
-                    interaction.guild.members.cache.get(w._id)
-                      ? interaction.guild.members.cache.get(w._id).user.username
+                    interaction.guild.members.cache.get(w._id.split('-')[0])
+                      ? interaction.guild.members.cache.get(w._id.split('-')[0])
+                          .user.username
                       : w._id
                   }`,
                   value: `**Parcerias no total:** ${w.partners.toLocaleString(
