@@ -71,8 +71,7 @@ module.exports = async (client, message) => {
         ],
         function (err, result) {
           if (err) throw err;
-          console.log(result);
-          membroRank = result.rank;
+          membroRank = result[0].rank;
         },
       );
 
