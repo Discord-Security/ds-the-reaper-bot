@@ -52,17 +52,30 @@ module.exports = async (client, message) => {
             $group: {
               _id: null,
               partners: { $push: '$partners' },
-              rank: { $sum: 1 },
             },
           },
           {
             $project: {
-              _id: 0,
               rank: {
                 $arrayElemAt: [
-                  ['$rank'],
+                  '$partners',
                   {
-                    $indexOfArray: ['$partners', 3],
+                    $indexOfArray: [
+                      '$partners',
+                      {
+                        $reduce: {
+                          input: '$partners',
+                          initialValue: -1,
+                          in: {
+                            $cond: [
+                              { $eq: ['$$this', 3] },
+                              { $sum: ['$$value', 1] },
+                              '$$value',
+                            ],
+                          },
+                        },
+                      },
+                    ],
                   },
                 ],
               },
@@ -71,7 +84,7 @@ module.exports = async (client, message) => {
         ],
         function (err, result) {
           if (err) throw err;
-          membroRank = result[0].rank;
+          membroRank = result[0].rank + 1;
         },
       );
 
