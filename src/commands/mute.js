@@ -6,7 +6,7 @@ module.exports = {
     .setName('mute')
     .setNameLocalizations({
       'pt-BR': 'silenciar',
-      'en-US': 'mute'
+      'en-US': 'mute',
     })
     .setDescription('Castigue um utilizador de falar no chat temporariamente.')
     .setDefaultMemberPermissions(discord.PermissionFlagsBits.ModerateMembers)
@@ -15,31 +15,31 @@ module.exports = {
         .setName('usuário')
         .setNameLocalizations({
           'pt-BR': 'usuário',
-          'en-US': 'user'
+          'en-US': 'user',
         })
         .setDescription('Mencione ou utilize um ID')
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption(option =>
       option
         .setName('tempo')
         .setNameLocalizations({
           'pt-BR': 'tempo',
-          'en-US': 'time'
+          'en-US': 'time',
         })
         .setDescription('Identifique um tempo. Exemplo: 1d, 1h, 1m')
-        .setRequired(true)
+        .setRequired(true),
     )
     .addStringOption(option =>
       option
         .setName('motivo')
         .setNameLocalizations({
           'pt-BR': 'motivo',
-          'en-US': 'reason'
+          'en-US': 'reason',
         })
-        .setDescription('Identifique o motivo do castigo')
+        .setDescription('Identifique o motivo do castigo'),
     ),
-  async execute (interaction, client) {
+  async execute(interaction, client) {
     const member = interaction.options.getMember('usuário');
     const reason =
       interaction.options.getString('motivo') ??
@@ -49,13 +49,20 @@ module.exports = {
     if (!time) {
       return interaction.reply({
         content:
-          'O tempo que foi dado não é válido. Você deve usar d para dias, h para horas e m para minutos.'
+          'O tempo que foi dado não é válido. Você deve usar d para dias, h para horas e m para minutos.',
+      });
+    }
+    if (!member) {
+      return interaction.reply({
+        content:
+          'O membro que foi dado não é válido, você deve mencionar alguém dentro do servidor.',
       });
     }
     await member.timeout(time, reason).catch(error => {
-      if (error) return interaction.reply({
-        content: 'É impossível realizar tal ação contra este usuário.'
-      });
+      if (error)
+        return interaction.reply({
+          content: 'É impossível realizar tal ação contra este usuário.',
+        });
     });
     const embed = new discord.EmbedBuilder()
       .setColor(client.cor)
@@ -85,11 +92,11 @@ module.exports = {
       .setImage('https://i.imgur.com/R997gVO.png')
       .setThumbnail(interaction.guild.iconURL());
     client.channels.cache.get(client.canais.logs).send({
-      embeds: [embed]
+      embeds: [embed],
     });
     return interaction.reply({
       content: `${member} foi mutado por ${ms(time, { long: true })}`,
-      ephemeral: true
+      ephemeral: true,
     });
-  }
+  },
 };
