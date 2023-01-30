@@ -36,7 +36,7 @@ module.exports = async (client, message) => {
           {
             $match: {
               _id: id,
-              serverId: 3,
+              serverId: message.guild.id,
             },
           },
           {

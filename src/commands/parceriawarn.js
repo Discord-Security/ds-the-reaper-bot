@@ -55,7 +55,7 @@ module.exports = {
         if (err) return interaction.reply(err);
         switch (subcommand) {
           case 'rank': {
-            interaction.reply({ content: 'Pesquisando...' });
+            await interaction.reply({ content: 'Pesquisando...' });
             let page;
             let buttonname;
             let collector;
@@ -132,8 +132,8 @@ module.exports = {
                   Search(page - 1);
                 }
               } else {
-                i.reply({
-                  content: client.msg.content.invalid,
+                i.editReply({
+                  content: "Consulta inválida.",
                   ephemeral: true,
                 });
               }
