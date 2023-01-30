@@ -75,7 +75,26 @@ module.exports = async (client, message) => {
           {
             $project: {
               _id: 0,
-              rank: '$rank',
+              rank: {
+                $arrayElemAt: [
+                  {
+                    $map: {
+                      input: {
+                        $filter: {
+                          input: '$partners',
+                          as: 'partner',
+                          cond: { $eq: ['$$partner._id', id] },
+                        },
+                      },
+                      as: 'filteredPartner',
+                      in: {
+                        $indexOfArray: ['$partners', '$$filteredPartner'],
+                      },
+                    },
+                  },
+                  0,
+                ],
+              },
             },
           },
         ],
