@@ -55,6 +55,7 @@ module.exports = {
         if (err) return interaction.reply(err);
         switch (subcommand) {
           case 'rank': {
+            interaction.reply({ content: 'Pesquisando...' });
             let page;
             let buttonname;
             let collector;
@@ -66,7 +67,7 @@ module.exports = {
               ).catch(err => {
                 if (err)
                   return interaction.editReply({
-                    content: "Consulta inválida",
+                    content: 'Consulta inválida',
                   });
               });
               page = waifu.page;
@@ -99,7 +100,9 @@ module.exports = {
                       ? interaction.guild.members.cache.get(w._id).user.username
                       : w._id
                   }`,
-                  value: `**Parcerias no total:** ${w.partners.toLocaleString('pt-BR')}`,
+                  value: `**Parcerias no total:** ${w.partners.toLocaleString(
+                    'pt-BR',
+                  )}`,
                   inline: true,
                 }));
 

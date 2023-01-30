@@ -71,13 +71,13 @@ module.exports = async (client, message) => {
         ],
         function (err, result) {
           if (err) throw err;
+          console.log(result)
           membroRank = result.rank;
         },
       );
 
       const idRegex = /<@(\d+)>/;
       const match = message.content.match(idRegex);
-      console.log(match);
       const serverNome = message.guild.name;
       const serverId = message.guild.id;
       const serverIcon = await message.guild.iconURL({
@@ -93,15 +93,12 @@ module.exports = async (client, message) => {
         .replace('%membroId', message.author.id)
         .replace('%membroMenção', `<@${message.author.id}>`)
         .replace('%membroRank', membroRank || 0)
-        .replace('%membroParcerias', db.partners || 1)
+        .replace('%membroParcerias', db ? db.partners : 1)
         .replace('"%membroAvatar"', `"${avatar}"`)
         .replace('%serverNome', serverNome)
         .replace('%serverId', serverId)
         .replace('"%serverIcon"', `"${serverIcon}"`)
-        .replace(
-          '%representante',
-          match !== null ? `<@${match[1]}>` : 'Desconhecido',
-        );
+        .replace('%representante', match !== null ? match[0] : 'Desconhecido');
 
       // %membro é o utilizador que enviou a mensagem, %membroparcerias é o número total de parcerias que a pessoa fez +1, %membrorank é o número do rank que ela está naquele servidor.
       client.trySend(
