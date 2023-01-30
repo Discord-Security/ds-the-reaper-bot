@@ -44,7 +44,6 @@ module.exports = async (client, message) => {
           }
           return prev;
         }, 0) + 1;
-      console.log(membroRank);
 
       const idRegex = /<@(\d+)>/;
       const match = message.content.match(idRegex);
