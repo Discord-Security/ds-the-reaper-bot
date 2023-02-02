@@ -5,7 +5,7 @@ module.exports = {
     .setName('unban')
     .setNameLocalizations({
       'pt-BR': 'desbanir',
-      'en-US': 'unban'
+      'en-US': 'unban',
     })
     .setDescription('Realize um desbanimento em network')
     .setDefaultMemberPermissions(discord.PermissionFlagsBits.BanMembers)
@@ -14,39 +14,39 @@ module.exports = {
         .setName('usuário')
         .setNameLocalizations({
           'pt-BR': 'usuário',
-          'en-US': 'user'
+          'en-US': 'user',
         })
         .setDescription('Identifique o ID do utilizador')
-        .setRequired(true)
+        .setRequired(true),
     )
     .addIntegerOption(option =>
       option
         .setName('gravidade')
         .setNameLocalizations({
           'pt-BR': 'gravidade',
-          'en-US': 'severity'
+          'en-US': 'severity',
         })
         .setMinValue(1)
         .setMaxValue(2)
         .setDescription('Identifique a gravidade do desbanimento de 1 a 2.')
-        .setRequired(true)
+        .setRequired(true),
     ),
-  async execute (interaction, client) {
+  async execute(interaction, client) {
     const gravidade = interaction.options.getInteger('gravidade');
     const usuario = interaction.options.getUser('usuário');
     if (gravidade === 1) {
       await interaction.guild.members.unban(usuario).then(
         interaction.reply({
           content: 'Desbanido com sucesso apenas neste servidor.',
-          ephemeral: true
-        })
+          ephemeral: true,
+        }),
       );
     }
     if (gravidade >= 2) {
       client.guilds.cache.forEach(a => a.members.unban(usuario));
       interaction.reply({
         content: `Desbanido com sucesso em ${client.guilds.cache.size} servidores.`,
-        ephemeral: true
+        ephemeral: true,
       });
     }
     const embed = new discord.EmbedBuilder()
@@ -56,21 +56,22 @@ module.exports = {
         {
           name: '<:Discord_Star:1038602481640407050> Moderador',
           value: `${interaction.member.user.tag} (${interaction.member.id})`,
-          inline: true
+          inline: true,
         },
         {
           name: '<:Discord_Danger:1028818835148656651> Réu',
           value: usuario.id,
-          inline: true
+          inline: true,
         },
         {
           name: '<:Discord_Online:1035624222338334770> Gravidade',
           value: gravidade.toString(),
-          inline: true
-        }
-      );
+          inline: true,
+        },
+      )
+      .setThumbnail(interaction.guild.iconURL());
     client.channels.cache.get(client.canais.logs).send({
-      embeds: [embed]
+      embeds: [embed],
     });
-  }
+  },
 };

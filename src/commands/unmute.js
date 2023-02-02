@@ -5,7 +5,7 @@ module.exports = {
     .setName('unmute')
     .setNameLocalizations({
       'pt-BR': 'desmutar',
-      'en-US': 'unmute'
+      'en-US': 'unmute',
     })
     .setDescription('Retire o castigo de um usuário')
     .setDefaultMemberPermissions(discord.PermissionFlagsBits.ModerateMembers)
@@ -14,18 +14,25 @@ module.exports = {
         .setName('usuário')
         .setNameLocalizations({
           'pt-BR': 'usuário',
-          'en-US': 'user'
+          'en-US': 'user',
         })
         .setDescription('Identifique o usuário')
-        .setRequired(true)
+        .setRequired(true),
     ),
-  async execute (interaction, client) {
+  async execute(interaction, client) {
     const member = interaction.options.getMember('usuário');
     const reason = 'Removido por: ' + interaction.member.user.tag;
-    await member.timeout(null, reason).catch(error => {
-      if (error) return interaction.reply({
-        content: 'É impossível realizar tal ação contra este usuário.'
+    if (!member) {
+      return interaction.reply({
+        content:
+          'O membro que foi dado não é válido, você deve mencionar alguém dentro do servidor.',
       });
+    }
+    await member.timeout(null, reason).catch(error => {
+      if (error)
+        return interaction.reply({
+          content: 'É impossível realizar tal ação contra este usuário.',
+        });
     });
     const embed = new discord.EmbedBuilder()
       .setColor(client.cor)
@@ -34,18 +41,19 @@ module.exports = {
         {
           name: '<:Discord_Star:1038602481640407050> Moderador',
           value: `${interaction.member.user.tag} (${interaction.member.id})`,
-          inline: true
+          inline: true,
         },
         {
           name: '<:Discord_Danger:1028818835148656651> Réu',
           value: `${member.user.tag} (${member.id})`,
-          inline: true
-        }
-      );
+          inline: true,
+        },
+      )
+      .setThumbnail(interaction.guild.iconURL());
     client.channels.cache.get(client.canais.logs).send({ embeds: [embed] });
     return interaction.reply({
       content: `Foi retirado o castigo a ${member}.`,
-      ephemeral: true
+      ephemeral: true,
     });
-  }
+  },
 };
