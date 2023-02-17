@@ -13,8 +13,8 @@ jobs:
     - name: SFTP Upload
       uses: Dylan700/sftp-upload-action@latest
       with:
-        server: nbg1.rolledhost.net
-        username: vwlztcz3ibanoqyspb3m.c35f39d5
+        server: eu1.odd.gay
+        username: kuriel23.4e2d7236
         password: ${{secrets.FTP_PASSWORD}}
         port: 2022
         uploads: |
