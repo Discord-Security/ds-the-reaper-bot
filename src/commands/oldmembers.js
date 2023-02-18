@@ -9,23 +9,39 @@ module.exports = {
     })
     .setDescription('Veja os membros mais antigos do servidor.'),
   async execute(interaction, client) {
-    interaction.reply({ content: 'Pesquisando contéudo...', ephemeral: true });
-    const members = interaction.guild.members.cache
-      .sort((a, b) => a.joinedAt - b.joinedAt)
-      .array();
-    const pages = members.chunk(15);
+    interaction.reply({
+      content: 'Pesquisando contéudo...',
+    });
+    const [members, chunkSize] = [
+        interaction.guild.members.cache
+        .filter(m => !m.user.bot)
+        .sort((a, b) => a.joinedAt - b.joinedAt),
+      15,
+    ];
+    const pages = [...Array(Math.ceil(members.length / chunkSize))].map(_ =>
+      members.splice(0, chunkSize),
+    );
 
     let currentPage = 1;
+    console.log(pages);
     const totalPages = pages.length;
 
-    // Cria a função para gerar a mensagem de página
     const generatePage = page => {
       const embed = new discord.EmbedBuilder()
         .setTitle(`Lista de membros ${interaction.guild.name}`)
         .setDescription(`Página ${currentPage}/${totalPages}`)
         .setColor(client.cor);
 
-      embed.addField('Membros', page.map(member => member.user.tag).join('\n'));
+      const fields = page.map(member => ({
+        name: `${member.user.tag}`,
+        value: `Data de entrada: ${discord.time(
+          member.user.joinedTimestamp,
+          'F',
+        )}`,
+        inline: true,
+      }));
+
+      embed.addFields(...fields);
 
       return embed;
     };
