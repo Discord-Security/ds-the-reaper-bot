@@ -2,10 +2,10 @@ const discord = require('discord.js');
 
 module.exports = {
   data: new discord.SlashCommandBuilder()
-    .setName('oldMembers')
+    .setName('old_members')
     .setNameLocalizations({
       'pt-BR': 'membros_antigos',
-      'en-US': 'oldMembers',
+      'en-US': 'old_members',
     })
     .setDescription('Veja os membros mais antigos do servidor.'),
   async execute(interaction, client) {
