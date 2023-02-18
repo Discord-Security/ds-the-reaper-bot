@@ -1,4 +1,4 @@
-module.exports = (client, interaction) => {
+module.exports = async (client, interaction) => {
   if (interaction.isButton()) {
     if (interaction.customId.startsWith('approve'))
       return require('../button/approve')(client, interaction);
@@ -20,7 +20,7 @@ module.exports = (client, interaction) => {
     const command = client.commands.get(interaction.commandName);
     if (!command) return;
     try {
-      client.db.Guilds.findOne(
+      await client.db.Guilds.findOne(
         { _id: interaction.guild.id },
         function (err, guild) {
           if (err) return interaction.reply(err);

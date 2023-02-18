@@ -116,20 +116,15 @@ module.exports = {
           .send({ embeds: [embed], components: [row] });
       }
     } else {
-      await client.db.Guilds.findOne(
-        { _id: interaction.guild.id },
-        function (err, guild) {
-          if (err) interaction.channel.send(err);
-          if (guild) {
-            if (guild.approved === true)
-              return interaction.reply({
-                content: 'Este servidor já foi aprovado dentro da rede.',
-                ephemeral: true,
-              });
-          } else if (!guild)
-            new client.db.Guilds({ _id: interaction.guild.id }).save();
-        },
-      );
+      const guild = await client.db.Guilds.findOne({
+        _id: interaction.guild.id,
+      }).lean();
+
+      if (guild.approved === true)
+        return interaction.reply({
+          content: 'Este servidor já foi aprovado dentro da rede.',
+          ephemeral: true,
+        });
 
       const modal = new discord.ModalBuilder()
         .setCustomId('candidatar')
