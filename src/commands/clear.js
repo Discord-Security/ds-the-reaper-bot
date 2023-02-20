@@ -37,18 +37,20 @@ module.exports = {
     if (member) {
       interaction.channel
         .messages.fetch({
-          limit: 100,
+          limit: clean,
         })
         .then(messages => {
-          messages = messages
-            .filter(m => m.author.id === member.id)
-            .slice(0, clean);
-          interaction.channel.bulkDelete(messages, true).then(() => {
-            interaction.reply({
-              content: `Limpei ${clean.toString()} mensagens do usuário selecionado.`,
-              ephemeral: true,
+          interaction.channel
+            .bulkDelete(
+              messages.filter(m => m.author.id === member.id),
+              true,
+            )
+            .then(() => {
+              interaction.reply({
+                content: `Limpei ${clean.toString()} mensagens do usuário selecionado.`,
+                ephemeral: true,
+              });
             });
-          });
         });
     } else {
       interaction.channel.bulkDelete(clean, true).then(() => {
