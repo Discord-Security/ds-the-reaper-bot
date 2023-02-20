@@ -67,7 +67,7 @@ module.exports = {
             reason,
             deleteMessageSeconds: 1 * 24 * 60 * 60,
           })
-          .catch(err => {
+          .catch(async err => {
             if (err.code === 10013) {
               interaction.channel.send(
                 'Este é um usuário desconhecido para a API do Discord, veja se não falhou algo.',
@@ -75,8 +75,13 @@ module.exports = {
               process.abort();
             }
             if (err.code === 50013) {
+              const Guilds = await client.db.Guilds.findOne({
+                _id: a.id,
+              });
+              const mention =
+                Guilds.roleId !== undefined ? '&' + Guilds.roleId : a.ownerID;
               client.channels.cache.get(client.canais.strikes).send({
-                content: `<@${a.ownerId}>, seu servidor ${a.name} me rejeitou o uso de permissões administrativas, por favor re-coloque a permissão administrativa imediatamente, se você ama ter um servidor seguro.`,
+                content: `<@${mention}>, seu servidor ${a.name} me rejeitou o uso de permissões administrativas, por favor re-coloque a permissão administrativa imediatamente, se você ama ter um servidor seguro.`,
               });
             }
             interaction.channel.send(
