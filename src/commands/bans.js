@@ -18,6 +18,19 @@ module.exports = {
     )
     .addSubcommand(subcommand =>
       subcommand
+        .setName('search')
+        .setNameLocalizations({ 'pt-BR': 'pesquisar', 'en-US': 'search' })
+        .setDescription('Pesquisar banimentos por motivos.')
+        .addStringOption(option =>
+          option
+            .setName('motivo')
+            .setNameLocalizations({ 'pt-BR': 'motivo', 'en-US': 'reason' })
+            .setDescription('Informe o paramêtro de busca.')
+            .setRequired(true),
+        ),
+    )
+    .addSubcommand(subcommand =>
+      subcommand
         .setName('export')
         .setNameLocalizations({ 'pt-BR': 'exportar', 'en-US': 'export' })
         .setDescription(

@@ -73,6 +73,15 @@ schedule.scheduleJob('00 16 * * 1', async function () {
     return part.forEach(p => {
       setTimeout(function () {
         if (p.id === g.id) return;
+        if (!g.partner.message || g.partner.message.length < 1) {
+          client.db.Guilds.findOne({ _id: g._id }, function (doc) {
+            client.channels.cache.get(client.canais.strikes).send({
+              content: `Servidor ${g._id} falhou ao enviar mensagem de parceria, mensagem sem conteúdo ou inválida. \n\nPara tentar reativar sem nenhum erro, cumpra o que o erro peça e use novamente o comando de /parceria canal`,
+            });
+            doc.partneractivated = false;
+            return doc.save();
+          });
+        }
         client.channels.cache
           .get(p.partner.channel)
           .send({

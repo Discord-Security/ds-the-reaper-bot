@@ -30,5 +30,12 @@ module.exports = async (client, guild) => {
     .get('1025774984402059436')
     .send({ embeds: [embed], components: [row] });
 
-  new client.db.Guilds({ _id: guild.id }).save();
+  client.db.Reaper.findOne({ _id: '1' }, async reaper => {
+    if (reaper.databaseExclude.find(item => item._id === guild.id)) {
+      reaper.databaseExclude.pull({ _id: guild.id });
+      reaper.save();
+    } else {
+      new client.db.Guilds({ _id: guild.id }).save();
+    }
+  });
 };

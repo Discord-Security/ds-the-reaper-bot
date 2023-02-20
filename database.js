@@ -94,7 +94,18 @@ const partnerSchema = new Schema({
 });
 partnerSchema.plugin(paginate);
 
+const reaperSchema = new Schema({
+  _id: { type: String, required: true },
+  databaseExclude: [
+    {
+      _id: { type: String, required: true },
+      schedule: { type: Date, required: true },
+    },
+  ],
+});
+
 module.exports.Guilds = model('Guilds', guildSchema);
 module.exports.Users = model('Users', userSchema);
 module.exports.Staffs = model('Staffs', staffSchema);
 module.exports.Partners = model('Partners', partnerSchema);
+module.exports.Reaper = model('Reaper', reaperSchema);
