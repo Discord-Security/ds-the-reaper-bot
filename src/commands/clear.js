@@ -42,7 +42,6 @@ module.exports = {
         .then(messages => {
           messages = messages
             .filter(m => m.author.id === member.id)
-            .array()
             .slice(0, clean);
           interaction.channel.bulkDelete(messages, true).then(() => {
             interaction.reply({
