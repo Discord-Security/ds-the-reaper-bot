@@ -36,7 +36,7 @@ module.exports = {
     const member = interaction.options.getUser('membro');
     if (member) {
       interaction.channel
-        .fetchMessages({
+        .messages.fetch({
           limit: 100,
         })
         .then(messages => {
