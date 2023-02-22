@@ -20,7 +20,7 @@ module.exports = async (client, interaction) => {
     const command = client.commands.get(interaction.commandName);
     if (!command) return;
     try {
-      const guild = client.db.Guilds.findOne({
+      const guild = await client.db.Guilds.findOne({
         _id: interaction.guild.id,
       }).lean();
       if (!guild) {

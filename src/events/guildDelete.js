@@ -28,6 +28,8 @@ module.exports = async (client, guild) => {
     client.db.Reaper.findOne({ _id: '1' }, async reaper => {
       if (reaper.databaseExclude.find(item => item._id === guild.id)) {
         await client.db.Guilds.deleteOne({ _id: guild.id });
+        reaper.databaseExclude.pull({ _id: guild.id });
+        reaper.save();
       }
     });
   }, 21600000);
