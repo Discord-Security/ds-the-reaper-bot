@@ -38,75 +38,66 @@ module.exports = {
             .permissionsFor(interaction.guild.id)
             .has(discord.PermissionFlagsBits.ViewChannel) === true,
       );
-    client.db.Guilds.findOne(
-      { _id: interaction.guild.id },
-      async function (err, guild) {
-        if (err)
-          return interaction.reply({
-            content: 'Ocorreu um erro no banco de dados.',
+    const guild = await client.db.Guilds.findOne({ _id: interaction.guild.id });
+    switch (subcommand) {
+      case 'ativar': {
+        await interaction.reply({
+          content: `Sucesso, todo o servidor foi bloqueado! Utilize **/lockdown desactivate** para abrir novamente o servidor.`,
+        });
+        await channels
+          .filter(
+            channel =>
+              channel
+                .permissionsFor(interaction.guild.id)
+                .has(discord.PermissionFlagsBits.SendMessages) === true,
+          )
+          .map(channel => {
+            let motivo = interaction.options.getString('motivo') || null;
+            motivo !== null
+              ? client.channels.cache.get(channel.id).send({
+                  embeds: [
+                    new discord.EmbedBuilder()
+                      .setColor(client.cor)
+                      .setTitle('Lockdown no servidor globalmente!')
+                      .setDescription(motivo)
+                      .setThumbnail('https://i.imgur.com/UhN88X9.png'),
+                  ],
+                })
+              : (motivo = null);
+            guild.channelsLockdown.push(channel.id);
+            return channel.permissionOverwrites.set(
+              [
+                {
+                  id: interaction.guild.id,
+                  deny: [discord.PermissionFlagsBits.SendMessages],
+                },
+              ],
+              'Modo Lockdown ativado',
+            );
           });
-        switch (subcommand) {
-          case 'ativar': {
-            await interaction.reply({
-              content: `Sucesso, todo o servidor foi bloqueado! Utilize **/lockdown desactivate** para abrir novamente o servidor.`,
-            });
-            await channels
-              .filter(
-                channel =>
-                  channel
-                    .permissionsFor(interaction.guild.id)
-                    .has(discord.PermissionFlagsBits.SendMessages) === true,
-              )
-              .map(channel => {
-                let motivo = interaction.options.getString('motivo') || null;
-                motivo !== null
-                  ? client.channels.cache.get(channel.id).send({
-                      embeds: [
-                        new discord.EmbedBuilder()
-                          .setColor(client.cor)
-                          .setTitle('Lockdown no servidor globalmente!')
-                          .setDescription(motivo)
-                          .setThumbnail('https://i.imgur.com/UhN88X9.png'),
-                      ],
-                    })
-                  : (motivo = null);
-                guild.channelsLockdown.push(channel.id);
-                return channel.permissionOverwrites.set(
-                  [
-                    {
-                      id: interaction.guild.id,
-                      deny: [discord.PermissionFlagsBits.SendMessages],
-                    },
-                  ],
-                  'Modo Lockdown ativado',
-                );
-              });
-            guild.save();
-            break;
-          }
-          case 'desativar': {
-            await interaction.reply({
-              content: `Sucesso, todo o servidor foi desbloqueado!`,
-            });
-            await channels
-              .map(channel => {
-                if (!guild.channelsLockdown.includes(channel.id)) return 0;
-                guild.channelsLockdown.pull(channel.id);
-                return channel.permissionOverwrites.set(
-                  [
-                    {
-                      id: interaction.guild.id,
-                      allow: [discord.PermissionFlagsBits.SendMessages],
-                    },
-                  ],
-                  'Modo Lockdown ativado',
-                );
-              });
-            guild.save();
-            break;
-          }
-        }
-      },
-    );
+        guild.save();
+        break;
+      }
+      case 'desativar': {
+        await interaction.reply({
+          content: `Sucesso, todo o servidor foi desbloqueado!`,
+        });
+        await channels.map(channel => {
+          if (!guild.channelsLockdown.includes(channel.id)) return 0;
+          guild.channelsLockdown.pull(channel.id);
+          return channel.permissionOverwrites.set(
+            [
+              {
+                id: interaction.guild.id,
+                allow: [discord.PermissionFlagsBits.SendMessages],
+              },
+            ],
+            'Modo Lockdown ativado',
+          );
+        });
+        guild.save();
+        break;
+      }
+    }
   },
 };

@@ -66,82 +66,61 @@ module.exports = {
     const time = interaction.options.getString('tempo') || null;
     switch (subcommand) {
       case 'canal': {
-        client.db.Guilds.findOne(
-          {
-            _id: interaction.guild.id,
-          },
-          function (err, doc) {
-            if (err) return interaction.reply(err);
-            doc.antifake.channel = channel.id;
-            doc.save();
-            interaction.reply({
-              content: 'Sucesso!',
-              ephemeral: true,
-            });
-          },
-        );
+        const doc = await client.db.Guilds.findOne({
+          _id: interaction.guild.id,
+        });
+        doc.antifake.channel = channel.id;
+        doc.save();
+        interaction.reply({
+          content: 'Sucesso!',
+          ephemeral: true,
+        });
         break;
       }
       case 'tempo': {
-        client.db.Guilds.findOne(
-          {
-            _id: interaction.guild.id,
-          },
-          function (err, doc) {
-            if (err) return interaction.reply(err);
-            const intfinal = ms(time);
-            if (!intfinal)
-              return interaction.reply({
-                content: 'Tempo Inválido! Teste utilizar 1d, 1h, 1m.',
-              });
-            doc.antifake.time = intfinal;
-            doc.save();
-            interaction.reply({ content: 'Sucesso!', ephemeral: true });
-          },
-        );
+        const doc = await client.db.Guilds.findOne({
+          _id: interaction.guild.id,
+        });
+        const intfinal = ms(time);
+        if (!intfinal)
+          return interaction.reply({
+            content: 'Tempo Inválido! Teste utilizar 1d, 1h, 1m.',
+          });
+        doc.antifake.time = intfinal;
+        doc.save();
+        interaction.reply({ content: 'Sucesso!', ephemeral: true });
         break;
       }
       case 'punição': {
         const action = interaction.options.get('ação').value;
-        client.db.Guilds.findOne(
-          {
-            _id: interaction.guild.id,
-          },
-          function (err, doc) {
-            if (err) interaction.reply(err);
-            interaction.reply({
-              content: `Eu defini para ${action
-                .replace('Ban', 'banir')
-                .replace(
-                  'Kick',
-                  'expulsar',
-                )} usuários em seu servidor no anti-fake.`,
-              ephemeral: true,
-            });
-            doc.antifake.action = action;
-            doc.save();
-          },
-        );
+        const doc = await client.db.Guilds.findOne({
+          _id: interaction.guild.id,
+        });
+        interaction.reply({
+          content: `Eu defini para ${action
+            .replace('Ban', 'banir')
+            .replace(
+              'Kick',
+              'expulsar',
+            )} usuários em seu servidor no anti-fake.`,
+          ephemeral: true,
+        });
+        doc.antifake.action = action;
+        doc.save();
         break;
       }
       case 'ativar': {
-        client.db.Guilds.findOne(
-          {
-            _id: interaction.guild.id,
-          },
-          function (err, doc) {
-            if (err) interaction.reply(err);
-            interaction.reply({
-              content:
-                'Alternado o sistema com Sucesso para ' + doc.antifake.active
-                  ? 'ativado'
-                  : 'desativado',
-              ephemeral: true,
-            });
-            doc.antifake.active = !doc.antifake.active;
-            doc.save();
-          },
-        );
+        const doc = await client.db.Guilds.findOne({
+          _id: interaction.guild.id,
+        });
+        interaction.reply({
+          content:
+            'Alternado o sistema com Sucesso para ' +
+            (doc.antifake.active ? 'ativado' : 'desativado'),
+          ephemeral: true,
+        });
+        doc.antifake.active = !doc.antifake.active;
+        doc.save();
         break;
       }
     }

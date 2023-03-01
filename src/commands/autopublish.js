@@ -46,44 +46,39 @@ module.exports = {
   async execute(interaction, client) {
     const subcommand = interaction.options._subcommand;
     const channel = interaction.options.getChannel('canal') || null;
-    client.db.Guilds.findOne(
-      {
-        _id: interaction.guild.id,
-      },
-      function (err, doc) {
-        if (err) return interaction.reply(err);
-        switch (subcommand) {
-          case 'add': {
-            doc.channelsAutopublish.push(channel.id);
-            doc.save();
-            interaction.reply({
-              content: 'Sucesso!',
-              ephemeral: true,
-            });
-            break;
-          }
-          case 'remove': {
-            doc.channelsAutopublish.pull(channel.id);
-            doc.save();
-            interaction.reply({
-              content: 'Sucesso!',
-              ephemeral: true,
-            });
-            break;
-          }
-          case 'list': {
-            interaction.reply({
-              content: `Aqui está a lista de canais que utilizam o sistema de autopublicar:\n\n${doc.channelsAutopublish
-                .map(c => {
-                  return `<#${c}>`;
-                })
-                .join('\n')}`,
-              ephemeral: true,
-            });
-            break;
-          }
-        }
-      },
-    );
+    const doc = await client.db.Guilds.findOne({
+      _id: interaction.guild.id,
+    });
+    switch (subcommand) {
+      case 'add': {
+        doc.channelsAutopublish.push(channel.id);
+        doc.save();
+        interaction.reply({
+          content: 'Sucesso!',
+          ephemeral: true,
+        });
+        break;
+      }
+      case 'remove': {
+        doc.channelsAutopublish.pull(channel.id);
+        doc.save();
+        interaction.reply({
+          content: 'Sucesso!',
+          ephemeral: true,
+        });
+        break;
+      }
+      case 'list': {
+        interaction.reply({
+          content: `Aqui está a lista de canais que utilizam o sistema de autopublicar:\n\n${doc.channelsAutopublish
+            .map(c => {
+              return `<#${c}>`;
+            })
+            .join('\n')}`,
+          ephemeral: true,
+        });
+        break;
+      }
+    }
   },
 };

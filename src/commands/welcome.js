@@ -89,122 +89,117 @@ module.exports = {
     const channel = interaction.options.getChannel('canal') || null;
     const time = interaction.options.getString('tempo') || null;
     const cargo = interaction.options.getRole('cargo') || null;
-    client.db.Guilds.findOne(
-      {
-        _id: interaction.guild.id,
-      },
-      function (err, doc) {
-        if (err) return interaction.reply(err);
-        switch (subcommand) {
-          case 'canal': {
-            doc.welcome.channel = channel.id;
-            doc.save();
-            interaction.reply({
-              content: 'Sucesso!',
-              ephemeral: true,
-            });
-            break;
-          }
-          case 'tempo': {
-            const intfinal = ms(time);
-            if (!intfinal)
-              return interaction.reply({
-                content:
-                  'Tempo inválido! Tente usar 1d, 1h ou 1m. Se desejar remover esse tempo, defina 0s.',
-              });
-            doc.welcome.timeout = intfinal;
-            doc.save();
-            interaction.reply({ content: 'Sucesso!', ephemeral: true });
-            break;
-          }
-          case 'ativar': {
-            doc.welcome.active = !doc.welcome.active;
-            doc.save();
-            interaction.reply({
-              content: `${
-                doc.welcome.active ? 'Ativado' : 'Desativado'
-              } com sucesso!`,
-              ephemeral: true,
-            });
-            break;
-          }
-          case 'exportar': {
-            interaction.reply({
-              content: 'Embaixo foi exportado o arquivo JSON!',
-              files: [
-                new discord.AttachmentBuilder(
-                  Buffer.from(
-                    JSON.stringify(doc.welcome.content, null, 2)
-                      .substring(
-                        1,
-                        JSON.stringify(doc.welcome.content, null, 2).length - 1,
-                      )
-                      .replace(/\\n/g, '\n')
-                      .replace(/\\"/g, '"')
-                      .replace(/\\/g, '\\n'),
-                  ),
-                  {
-                    name: 'welcome.json',
-                  },
-                ),
-              ],
-            });
-            break;
-          }
-          case 'mensagem': {
-            interaction.reply({
-              content:
-                'Você escolheu a opção de mensagem. Para personalizar sua mensagem, visite o site https://glitchii.github.io/embedbuilder/. Por favor, lembre-se das variáveis de boas-vindas disponíveis na nossa documentação. Você tem 5 minutos para enviar a mensagem de boas-vindas ou digite cancelar para cancelar a nova mensagem.',
-            });
-            const filter = m => interaction.user.id === m.author.id;
-            const collector = interaction.channel.createMessageCollector({
-              filter,
-              time: 300000,
-              max: 1,
-            });
+    const doc = await client.db.Guilds.findOne({
+      _id: interaction.guild.id,
+    });
+    switch (subcommand) {
+      case 'canal': {
+        doc.welcome.channel = channel.id;
+        doc.save();
+        interaction.reply({
+          content: 'Sucesso!',
+          ephemeral: true,
+        });
+        break;
+      }
+      case 'tempo': {
+        const intfinal = ms(time);
+        if (!intfinal)
+          return interaction.reply({
+            content:
+              'Tempo inválido! Tente usar 1d, 1h ou 1m. Se desejar remover esse tempo, defina 0s.',
+          });
+        doc.welcome.timeout = intfinal;
+        doc.save();
+        interaction.reply({ content: 'Sucesso!', ephemeral: true });
+        break;
+      }
+      case 'ativar': {
+        doc.welcome.active = !doc.welcome.active;
+        doc.save();
+        interaction.reply({
+          content: `${
+            doc.welcome.active ? 'Ativado' : 'Desativado'
+          } com sucesso!`,
+          ephemeral: true,
+        });
+        break;
+      }
+      case 'exportar': {
+        interaction.reply({
+          content: 'Embaixo foi exportado o arquivo JSON!',
+          files: [
+            new discord.AttachmentBuilder(
+              Buffer.from(
+                JSON.stringify(doc.welcome.content, null, 2)
+                  .substring(
+                    1,
+                    JSON.stringify(doc.welcome.content, null, 2).length - 1,
+                  )
+                  .replace(/\\n/g, '\n')
+                  .replace(/\\"/g, '"')
+                  .replace(/\\/g, '\\n'),
+              ),
+              {
+                name: 'welcome.json',
+              },
+            ),
+          ],
+        });
+        break;
+      }
+      case 'mensagem': {
+        interaction.reply({
+          content:
+            'Você escolheu a opção de mensagem. Para personalizar sua mensagem, visite o site https://glitchii.github.io/embedbuilder/. Por favor, lembre-se das variáveis de boas-vindas disponíveis na nossa documentação. Você tem 5 minutos para enviar a mensagem de boas-vindas ou digite cancelar para cancelar a nova mensagem.',
+        });
+        const filter = m => interaction.user.id === m.author.id;
+        const collector = interaction.channel.createMessageCollector({
+          filter,
+          time: 300000,
+          max: 1,
+        });
 
-            collector.on('collect', async m => {
-              if (m.content === 'cancelar') return 0;
-              try {
-                const pe = JSON.parse(m.content);
-                interaction.channel.send(pe).catch(() => {
-                  return interaction.channel.send(
-                    'A Mensagem que você enviou está com erros para ser testada, mas não se preocupe a verificação principal foi certificada!',
-                  );
-                });
-                const doc = await client.db.Guilds.findOne({
-                  _id: interaction.guild.id,
-                });
-                doc.welcome.content = m.content;
-                doc.save();
-              } catch (err) {
-                return interaction.channel.send(
-                  'Seu JSON é inválido para minha inteligência, veja se você copiou tudo!',
-                );
-              }
+        collector.on('collect', async m => {
+          if (m.content === 'cancelar') return 0;
+          try {
+            const pe = JSON.parse(m.content);
+            interaction.channel.send(pe).catch(() => {
+              return interaction.channel.send(
+                'A Mensagem que você enviou está com erros para ser testada, mas não se preocupe a verificação principal foi certificada!',
+              );
             });
-            break;
-          }
-          case 'addrole': {
-            doc.welcome.roles.push(cargo.id);
+            const doc = await client.db.Guilds.findOne({
+              _id: interaction.guild.id,
+            });
+            doc.welcome.content = m.content;
             doc.save();
-            interaction.reply({
-              content: 'Sucesso!',
-              ephemeral: true,
-            });
-            break;
+          } catch (err) {
+            return interaction.channel.send(
+              'Seu JSON é inválido para minha inteligência, veja se você copiou tudo!',
+            );
           }
-          case 'removerole': {
-            doc.welcome.roles.pull(cargo.id);
-            doc.save();
-            interaction.reply({
-              content: 'Sucesso!',
-              ephemeral: true,
-            });
-            break;
-          }
-        }
-      },
-    );
+        });
+        break;
+      }
+      case 'addrole': {
+        doc.welcome.roles.push(cargo.id);
+        doc.save();
+        interaction.reply({
+          content: 'Sucesso!',
+          ephemeral: true,
+        });
+        break;
+      }
+      case 'removerole': {
+        doc.welcome.roles.pull(cargo.id);
+        doc.save();
+        interaction.reply({
+          content: 'Sucesso!',
+          ephemeral: true,
+        });
+        break;
+      }
+    }
   },
 };

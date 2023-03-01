@@ -15,15 +15,13 @@ module.exports = async (client, interaction) => {
 
   collector.on('collect', async message => {
     const id = message.content;
-    client.db.Guilds.findOne({ _id: id }, function (err, guild) {
-      if (err) return interaction.reply(err);
-      if (guild) {
-        guild.approved = true;
-        guild.save();
-      } else {
-        new client.db.Guilds({ _id: id, approved: true }).save();
-      }
-    });
+    const guild = await client.db.Guilds.findOne({ _id: id });
+    if (guild) {
+      guild.approved = true;
+      guild.save();
+    } else {
+      new client.db.Guilds({ _id: id, approved: true }).save();
+    }
     const guilds = await client.db.Guilds.find({ approved: true });
     const emb = new discord.EmbedBuilder()
       .setColor(client.cor)

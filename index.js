@@ -71,16 +71,17 @@ schedule.scheduleJob('00 16 * * 1', async function () {
   part.map(g => {
     let i = 0;
     return part.forEach(p => {
-      setTimeout(function () {
+      setTimeout(async function () {
         if (p.id === g.id) return;
         if (!g.partner.message || g.partner.message.length < 1) {
-          client.db.Guilds.findOne({ _id: g._id }, function (doc) {
+          const doc = await client.db.Guilds.findOne({ _id: g._id });
+          if (doc) {
             client.channels.cache.get(client.canais.strikes).send({
               content: `Servidor ${g._id} falhou ao enviar mensagem de parceria, mensagem sem conteúdo ou inválida. \n\nPara tentar reativar sem nenhum erro, cumpra o que o erro peça e use novamente o comando de /parceria canal`,
             });
             doc.partneractivated = false;
             return doc.save();
-          });
+          }
         }
         client.channels.cache
           .get(p.partner.channel)
@@ -89,21 +90,22 @@ schedule.scheduleJob('00 16 * * 1', async function () {
               g.partner.message.replace('@here', '').replace('@everyone', '') +
               `\n\n<@&${p.partner.role}>`,
           })
-          .catch(err => {
+          .catch(async err => {
             if (err) console.log(err);
-            client.db.Guilds.findOne({ _id: p._id }, function (err, doc) {
+            const doc = await client.db.Guilds.findOne({ _id: p._id })
+            if (doc) {
               client.channels.cache.get(client.canais.strikes).send({
                 content: `Servidor ${p._id} falhou ao enviar mensagem de parcerias: \n\n\`\`\`${err}\`\`\`\n\nPara tentar reativar sem nenhum erro, cumpra o que o erro peça e use novamente o comando de /parceria canal`,
               });
               doc.partneractivated = false;
               doc.save();
-            });
+            };
           });
       });
     }, 15000 * i++);
   });
 });
-
+  
 const boilerplateComponents = async () => {
   await require('./src/util/boilerplateClient')(client);
 };

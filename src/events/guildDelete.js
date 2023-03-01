@@ -13,7 +13,8 @@ module.exports = async (client, guild) => {
     content: `<@${guild.ownerId}>, seu servidor ${guild.name} me retirou, me adicione novamente e peça por aprovação a um dos administradores! Ao eu ser retirado de um servidor, excluo todos os dados definidos como canais de logs, welcomes e aprovações dentro de 6 horas.`,
   });
 
-  client.db.Reaper.findOne({ _id: '1' }, async reaper => {
+  const reaper = await client.db.Reaper.findOne({ _id: '1' });
+  if (reaper) {
     const _date = new Date();
     _date.setHours(_date.getHours() + 6);
     const date = new Date(_date);
@@ -22,15 +23,16 @@ module.exports = async (client, guild) => {
       schedule: date,
     });
     reaper.save();
-  });
+  }
 
   setTimeout(async () => {
-    client.db.Reaper.findOne({ _id: '1' }, async reaper => {
+    const reaper = await client.db.Reaper.findOne({ _id: '1' });
+    if (reaper) {
       if (reaper.databaseExclude.find(item => item._id === guild.id)) {
         await client.db.Guilds.deleteOne({ _id: guild.id });
         reaper.databaseExclude.pull({ _id: guild.id });
         reaper.save();
       }
-    });
+    }
   }, 21600000);
 };

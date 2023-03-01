@@ -21,41 +21,41 @@ connect(process.env.db, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const userSchema = new Schema({
   _id: { type: String, required: true },
-  warns: { type: Array },
+  warns: Array,
 });
 
 const staffSchema = new Schema({
   _id: { type: String, required: true },
-  serverIds: { type: Array },
+  serverIds: Array,
 });
 
 const guildSchema = new Schema({
   _id: { type: String, required: true },
   approved: { type: Boolean, default: false },
-  roleId: { type: String },
-  channelsLockdown: { type: Array },
-  channelsAutopublish: { type: Array },
+  roleId: String,
+  channelsLockdown: Array,
+  channelsAutopublish: Array,
   logs: {
-    deletedMessage: { type: String },
-    editedMessage: { type: String },
-    joinedMember: { type: String },
-    leftMember: { type: String },
-    punishments: { type: String },
+    deletedMessage: String,
+    editedMessage: String,
+    joinedMember: String,
+    leftMember: String,
+    punishments: String,
   },
   welcome: {
     active: { type: Boolean, default: false },
-    channel: { type: String },
+    channel: String,
     content: {
       type: String,
       default:
         '{ "content": "Bem-vindo ao nosso servidor %membro, espero que se divirta aqui!" }',
     },
     timeout: { type: Number, default: 0 },
-    roles: { type: Array },
+    roles: Array,
   },
   exit: {
     active: { type: Boolean, default: false },
-    channel: { type: String },
+    channel: String,
     content: {
       type: String,
       default: '{ "content": "Adeus %membro, espero que voltemo-nos a ver!" }',
@@ -66,20 +66,20 @@ const guildSchema = new Schema({
     active: { type: Boolean, default: false },
     time: { type: Number, default: 7200000 },
     action: { type: String, default: 'Kick' },
-    channel: { type: String },
+    channel: String,
   },
   backup: {
-    password: { type: String },
+    password: String,
   },
   partner: {
-    channel: { type: String },
-    message: { type: String },
-    role: { type: String },
+    channel: String,
+    message: String,
+    role: String,
   },
   partneractivated: { type: Boolean, default: false },
   partnerWarning: {
     activated: { type: Boolean, default: false },
-    channel: { type: String },
+    channel: String,
     message: {
       type: String,
       default: '{ "content": "Obrigado pela parceria %representante!" }',

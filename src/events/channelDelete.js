@@ -24,7 +24,7 @@ module.exports = async (client, channel) => {
       },
       {
         name: '🆔 Canal',
-        value: `${channel.name !== null || channel.name !== undefined ? channel.name : ''} ${channel.id}`,
+        value: `${channel.name !== null ? channel.name : ''} ${channel.id}`,
         inline: true,
       },
       {

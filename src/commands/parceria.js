@@ -78,65 +78,52 @@ module.exports = {
         });
 
       if (i) {
-        client.db.Guilds.findOne(
-          { _id: interaction.guild.id },
-          function (err, doc) {
-            if (err) return;
-            if (doc) {
-              doc.partner.message = i.fields.getTextInputValue('MessageInput');
-              doc.save();
-            } else if (!doc) {
-              new client.db.Guilds({
-                _id: interaction.guild.id,
-                partner: {
-                  message: i.fields.getTextInputValue('MessageInput'),
-                },
-              }).save();
-            }
-          },
-        );
+        const doc = await client.db.Guilds.findOne({
+          _id: interaction.guild.id,
+        });
+        if (doc) {
+          doc.partner.message = i.fields.getTextInputValue('MessageInput');
+          doc.save();
+        } else if (!doc) {
+          new client.db.Guilds({
+            _id: interaction.guild.id,
+            partner: {
+              message: i.fields.getTextInputValue('MessageInput'),
+            },
+          }).save();
+        }
         i.reply({ content: 'Definido mensagem com sucesso.' });
       }
     }
     if (subcommand === 'cargo') {
       const role = interaction.options.getRole('cargo');
       interaction.reply('Definido com sucesso para esse cargo.');
-      client.db.Guilds.findOne(
-        { _id: interaction.guild.id },
-        function (err, doc) {
-          if (err) return;
-          if (doc) {
-            doc.partner.role = role.id;
-            doc.save();
-          } else if (!doc) {
-            new client.db.Guilds({
-              _id: interaction.guild.id,
-              partner: { role: role.id },
-            }).save();
-          }
-        },
-      );
+      const doc = await client.db.Guilds.findOne({ _id: interaction.guild.id });
+      if (doc) {
+        doc.partner.role = role.id;
+        doc.save();
+      } else if (!doc) {
+        new client.db.Guilds({
+          _id: interaction.guild.id,
+          partner: { role: role.id },
+        }).save();
+      }
     }
     if (subcommand === 'canal') {
       const channel = interaction.options.getChannel('canal');
       interaction.reply('Definido com sucesso para esse canal.');
-      client.db.Guilds.findOne(
-        { _id: interaction.guild.id },
-        function (err, doc) {
-          if (err) return;
-          if (doc) {
-            doc.partner.channel = channel.id;
-            doc.partneractivated = true;
-            doc.save();
-          } else if (!doc) {
-            new client.db.Guilds({
-              _id: interaction.guild.id,
-              partneractivated: true,
-              partner: { channel: channel.id },
-            }).save();
-          }
-        },
-      );
+      const doc = await client.db.Guilds.findOne({ _id: interaction.guild.id });
+      if (doc) {
+        doc.partner.channel = channel.id;
+        doc.partneractivated = true;
+        doc.save();
+      } else if (!doc) {
+        new client.db.Guilds({
+          _id: interaction.guild.id,
+          partneractivated: true,
+          partner: { channel: channel.id },
+        }).save();
+      }
     }
     if (subcommand === 'info') {
       const emb = new discord.EmbedBuilder()

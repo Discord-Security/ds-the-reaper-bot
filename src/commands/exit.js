@@ -59,102 +59,95 @@ module.exports = {
     const subcommand = interaction.options._subcommand;
     const channel = interaction.options.getChannel('canal') || null;
     const time = interaction.options.getString('tempo') || null;
-    client.db.Guilds.findOne(
-      {
-        _id: interaction.guild.id,
-      },
-      function (err, doc) {
-        if (err) return interaction.reply(err);
-        switch (subcommand) {
-          case 'canal': {
-            doc.exit.channel = channel.id;
-            doc.save();
-            interaction.reply({
-              content: 'Sucesso!',
-              ephemeral: true,
-            });
-            break;
-          }
-          case 'tempo': {
-            const intfinal = ms(time);
-            if (!intfinal)
-              return interaction.reply({
-                content:
-                  'Tempo inválido! Tente usar 1d, 1h ou 1m. Se desejar remover esse tempo, defina 0s.',
-              });
-            doc.exit.timeout = intfinal;
-            doc.save();
-            interaction.reply({ content: 'Sucesso!', ephemeral: true });
-            break;
-          }
-          case 'ativar': {
-            doc.exit.active = !doc.exit.active;
-            doc.save();
-            interaction.reply({
-              content: `${
-                doc.exit.active ? 'Ativado' : 'Desativado'
-              } com sucesso!`,
-              ephemeral: true,
-            });
-            break;
-          }
-          case 'mensagem': {
-            interaction.reply({
-              content:
-                'Você selecionou a opção de Mensagem. Para isso você poderá personalizar toda a sua mensagem neste site: https://glitchii.github.io/embedbuilder/ , tendo em conta as mesmas variáveis do bem-vindo disponíveis em nossa documentação. Você tem 5 minutos para enviar a mensagem de saída ou diga `cancelar` para ser anulada a nova mensagem.',
-            });
-            const filter = m => interaction.user.id === m.author.id;
-            const collector = interaction.channel.createMessageCollector({
-              filter,
-              time: 300000,
-              max: 1,
-            });
+    const doc = await client.db.Guilds.findOne({
+      _id: interaction.guild.id,
+    });
+    switch (subcommand) {
+      case 'canal': {
+        doc.exit.channel = channel.id;
+        doc.save();
+        interaction.reply({
+          content: 'Sucesso!',
+          ephemeral: true,
+        });
+        break;
+      }
+      case 'tempo': {
+        const intfinal = ms(time);
+        if (!intfinal)
+          return interaction.reply({
+            content:
+              'Tempo inválido! Tente usar 1d, 1h ou 1m. Se desejar remover esse tempo, defina 0s.',
+          });
+        doc.exit.timeout = intfinal;
+        doc.save();
+        interaction.reply({ content: 'Sucesso!', ephemeral: true });
+        break;
+      }
+      case 'ativar': {
+        doc.exit.active = !doc.exit.active;
+        doc.save();
+        interaction.reply({
+          content: `${doc.exit.active ? 'Ativado' : 'Desativado'} com sucesso!`,
+          ephemeral: true,
+        });
+        break;
+      }
+      case 'mensagem': {
+        interaction.reply({
+          content:
+            'Você selecionou a opção de Mensagem. Para isso você poderá personalizar toda a sua mensagem neste site: https://glitchii.github.io/embedbuilder/ , tendo em conta as mesmas variáveis do bem-vindo disponíveis em nossa documentação. Você tem 5 minutos para enviar a mensagem de saída ou diga `cancelar` para ser anulada a nova mensagem.',
+        });
+        const filter = m => interaction.user.id === m.author.id;
+        const collector = interaction.channel.createMessageCollector({
+          filter,
+          time: 300000,
+          max: 1,
+        });
 
-            collector.on('collect', async m => {
-              if (m.content === 'cancelar') return 0;
-              try {
-                const pe = JSON.parse(m.content);
-                interaction.channel.send(pe).catch(err => {
-                  if (err)
-                    return interaction.channel.send(
-                      'A Mensagem que você enviou está com erros para ser testada, mas não se preocupe a verificação principal foi certificada!',
-                    );
-                });
-                doc.exit.content = m.content;
-                doc.save();
-              } catch (err) {
+        collector.on('collect', async m => {
+          if (m.content === 'cancelar') return 0;
+          try {
+            const pe = JSON.parse(m.content);
+            interaction.channel.send(pe).catch(err => {
+              if (err)
                 return interaction.channel.send(
-                  'Seu JSON é inválido para minha inteligência, veja se você copiou tudo certo!',
+                  'A Mensagem que você enviou está com erros para ser testada, mas não se preocupe a verificação principal foi certificada!',
                 );
-              }
             });
-            break;
+            doc.exit.content = m.content;
+            doc.save();
+          } catch (err) {
+            return interaction.channel.send(
+              'Seu JSON é inválido para minha inteligência, veja se você copiou tudo certo!',
+            );
           }
-          case 'exportar': {
-            interaction.reply({
-              content: 'Embaixo foi exportado o arquivo JSON!',
-              files: [
-                new discord.AttachmentBuilder(
-                  Buffer.from(
-                    JSON.stringify(doc.exit.content, null, 2)
-                      .substring(
-                        1,
-                        JSON.stringify(doc.exit.content, null, 2).length - 1,
-                      )
-                      .replace(/\\n/g, '\n')
-                      .replace(/\\"/g, '"')
-                      .replace(/\\/g, '\\n'),
-                  ),
-                  {
-                    name: 'exit.json',
-                  },
-                ),
-              ],
-            });
-            break;
-          }
-        }
-      },
-    );
+        });
+        break;
+      }
+      case 'exportar': {
+        interaction.reply({
+          content: 'Embaixo foi exportado o arquivo JSON!',
+          files: [
+            new discord.AttachmentBuilder(
+              Buffer.from(
+                JSON.stringify(doc.exit.content, null, 2)
+                  .substring(
+                    1,
+                    JSON.stringify(doc.exit.content, null, 2).length - 1,
+                  )
+                  .replace(/\\n/g, '\n')
+                  .replace(/\\"/g, '"')
+                  .replace(/\\/g, '\\n'),
+              ),
+              {
+                name: 'exit.json',
+              },
+            ),
+          ],
+        });
+        break;
+      }
+    }
   },
 };

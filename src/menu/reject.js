@@ -14,7 +14,7 @@ module.exports = async (client, interaction) => {
   collector.on('collect', async message => {
     const id = message.content;
     const guild = client.guilds.cache.get(id);
-    guild ? guild.leave() : client.db.Guilds.deleteOne({ _id: id });
+    guild ? guild.leave() : await client.db.Guilds.deleteOne({ _id: id });
     message.reply({ content: 'Servidor rejeitado com sucesso!' });
   });
 };

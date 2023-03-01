@@ -56,16 +56,17 @@ module.exports = async client => {
     activities: [{ name: 'Tóxicos? Aqui não!', type: 3 }],
     status: 'dnd',
   });
-  client.db.Reaper.findOne({ _id: '1' }, function (err, not) {
-    if (err) return;
+  const not = await client.db.Reaper.findOne({ _id: '1' });
+  if (not) {
     not.databaseExclude.forEach(reps => {
       schedule.scheduleJob(reps.schedule, async function () {
-        client.db.Reaper.findOne({ _id: '1' }, async reaper => {
+        const reaper = client.db.Reaper.findOne({ _id: '1' });
+        if (reaper) {
           if (reaper.databaseExclude.find(item => item._id === reps._id)) {
             await client.db.Guilds.deleteOne({ _id: reps._id });
           }
-        });
+        }
       });
     });
-  });
+  }
 };
