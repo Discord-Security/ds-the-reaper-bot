@@ -153,10 +153,12 @@ module.exports = {
             `Tag - ID - Motivo\n\n${bans
               .map(
                 b =>
-                  `${b.user.tag} - ${b.user.id} - ${b.reason.replace(
-                    motivo,
-                    '**' + motivo + '**',
-                  )}`,
+                  `${b.user.tag} - ${b.user.id} - ${b.reason
+                    .replace(motivo, '**' + motivo + '**')
+                    .replace(
+                      /Banido por The Reaper[\s\S]*?gravidade\s*([1-2]) -/,
+                      '',
+                    )}`,
               )
               .join('\n')}`,
           );
