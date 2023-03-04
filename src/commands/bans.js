@@ -138,10 +138,9 @@ module.exports = {
 
         const bans = [];
         for (let i = 0; i < completeBanIdList.length; i++) {
-          const user = await interaction.guild.members.fetch(
+          const banInfo = await interaction.guild.bans.fetch(
             completeBanIdList[i],
           );
-          const banInfo = await interaction.guild.bans.fetch(user);
           bans.push(banInfo.filter(b => b.reason.includes(motivo)));
         }
 
