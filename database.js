@@ -35,6 +35,7 @@ const guildSchema = new Schema({
   roleId: String,
   channelsLockdown: Array,
   channelsAutopublish: Array,
+  lockdownTime: Date,
   logs: {
     deletedMessage: String,
     editedMessage: String,

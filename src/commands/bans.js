@@ -111,6 +111,61 @@ module.exports = {
         });
         break;
       }
+      case 'search': {
+        const motivo = interaction.options.getString('motivo');
+        const completeBanIdList = await (async (
+          a = [],
+          last = 0,
+          limit = 1000,
+        ) => {
+          while (limit === 1000) {
+            const bans = await interaction.guild.bans.fetch({
+              after: last,
+              limit,
+            });
+            const banlist = bans.map(user => user.user.id);
+
+            last = bans.last().user.id;
+            limit = banlist.length;
+
+            for (let i = 0; i < limit; i++) {
+              a.push(banlist[i]);
+            }
+          }
+
+          return a;
+        })();
+
+        const bans = [];
+        for (let i = 0; i < completeBanIdList.length; i++) {
+          const user = await interaction.guild.members.fetch(
+            completeBanIdList[i],
+          );
+          const banInfo = await interaction.guild.bans.fetch(user);
+          bans.push(banInfo.filter(b => b.reason.includes(motivo)));
+        }
+
+        const emb = new discord.MessageEmbed()
+          .setTimestamp()
+          .setTitle('Banimentos filtrados por: ' + motivo)
+          .setDescription(
+            `Tag - ID - Motivo\n\n${bans
+              .map(
+                b =>
+                  `${b.user.tag} - ${b.user.id} - ${b.reason.replace(
+                    motivo,
+                    '**' + motivo + '**',
+                  )}`,
+              )
+              .join('\n')}`,
+          )
+          .setFooter(`${motivo} banimentos foram banidos.`);
+        interaction.reply({
+          content: `Aqui está o que achei, no total são ${bans} banidos pelo motivo filtrado:`,
+          embeds: [emb],
+        });
+        break;
+      }
     }
   },
 };

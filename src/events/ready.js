@@ -4,6 +4,7 @@ const { readdirSync } = require('fs');
 require('dotenv').config();
 const { ChalkAdvanced } = require('chalk-advanced');
 const schedule = require('node-schedule');
+const discord = require('discord.js');
 
 module.exports = async client => {
   const commandFiles = readdirSync('./src/commands/').filter(file =>
@@ -66,6 +67,48 @@ module.exports = async client => {
             await client.db.Guilds.deleteOne({ _id: reps._id });
           }
         }
+      });
+    });
+  }
+
+  const lockdownsForComplete = await client.db.Guilds.find({
+    lockdownTime: { $exists: true },
+  });
+  if (lockdownsForComplete) {
+    lockdownsForComplete.maps(document => {
+      schedule.scheduleJob(document.lockdownTime, async function () {
+        await client.db.Guilds.updateOne(
+          { _id: document._id },
+          { $unset: { lockdownTime: 1 } },
+        );
+        const guild = await client.db.Guilds.findOne({
+          _id: document._id,
+        });
+        const channels = client.guilds.cache
+          .get(document._id)
+          .channels.cache.filter(
+            channel => channel.type === discord.ChannelType.GuildText,
+          )
+          .filter(
+            channel =>
+              channel
+                .permissionsFor(document._id)
+                .has(discord.PermissionFlagsBits.ViewChannel) === true,
+          );
+        channels.map(channel => {
+          if (!guild.channelsLockdown.includes(channel.id)) return 0;
+          guild.channelsLockdown.pull(channel.id);
+          return channel.permissionOverwrites.set(
+            [
+              {
+                id: document._id,
+                allow: [discord.PermissionFlagsBits.SendMessages],
+              },
+            ],
+            'Modo Lockdown desativado',
+          );
+        });
+        guild.save();
       });
     });
   }
