@@ -74,7 +74,7 @@ module.exports = async client => {
   const lockdownsForComplete = await client.db.Guilds.find({
     lockdownTime: { $exists: true },
   });
-  if (lockdownsForComplete) {
+  if (lockdownsForComplete.length > 1) {
     lockdownsForComplete.maps(document => {
       schedule.scheduleJob(document.lockdownTime, async function () {
         await client.db.Guilds.updateOne(
