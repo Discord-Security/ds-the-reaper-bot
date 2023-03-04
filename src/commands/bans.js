@@ -141,7 +141,9 @@ module.exports = {
           const banInfo = await interaction.guild.bans.fetch(
             completeBanIdList[i],
           );
-          bans.push(banInfo.filter(b => b.reason.includes(motivo)));
+          if (banInfo.reason && banInfo.reason.includes(motivo)) {
+            bans.push(banInfo);
+          }
         }
 
         const emb = new discord.MessageEmbed()
