@@ -157,7 +157,7 @@ module.exports = {
                   `${b.user.tag} - ${b.user.id} - ${b.reason
                     .replace(motivo, '**' + motivo + '**')
                     .replace(
-                      /Banido por The Reaper[\s\S]*?- gravidade\s*([1-2]) -$/g,
+                      /Banido por The Reaper[\s\S]*?gravidade\s*([1-2])\s*-/g,
                       '',
                     )}`,
               )
