@@ -146,7 +146,7 @@ module.exports = {
           }
         }
 
-        const emb = new discord.MessageEmbed()
+        const emb = new discord.EmbedBuilder()
           .setTimestamp()
           .setTitle('Banimentos filtrados por: ' + motivo)
           .setDescription(
