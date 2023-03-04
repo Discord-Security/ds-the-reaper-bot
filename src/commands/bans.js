@@ -159,8 +159,7 @@ module.exports = {
                   )}`,
               )
               .join('\n')}`,
-          )
-          .setFooter(`${motivo} banimentos foram banidos.`);
+          );
         interaction.reply({
           content: `Aqui está o que achei, no total são ${bans} banidos pelo motivo filtrado:`,
           embeds: [emb],
