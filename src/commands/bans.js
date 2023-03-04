@@ -149,6 +149,7 @@ module.exports = {
         const emb = new discord.EmbedBuilder()
           .setTimestamp()
           .setTitle('Banimentos filtrados por: ' + motivo)
+          .setColor(client.cor)
           .setDescription(
             `Tag - ID - Motivo\n\n${bans
               .map(
@@ -163,7 +164,7 @@ module.exports = {
               .join('\n')}`,
           );
         interaction.reply({
-          content: `Aqui está o que achei, no total são ${bans} banidos pelo motivo filtrado:`,
+          content: `Aqui está o que achei, no total são ${bans.length} banidos pelo motivo filtrado:`,
           embeds: [emb],
         });
         break;
