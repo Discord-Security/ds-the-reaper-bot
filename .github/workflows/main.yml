@@ -23,6 +23,7 @@ jobs:
           *.git
           */**/*git*
           ./.vscode
+          ./.github
     - name: Pterodactyl-Restart
       uses: supercrafter100/Pterodactyl-Restart@v1.0
       with:
