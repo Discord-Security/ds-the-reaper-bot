@@ -61,7 +61,7 @@ module.exports = async client => {
   if (not) {
     not.databaseExclude.forEach(reps => {
       schedule.scheduleJob(reps.schedule, async function () {
-        const reaper = client.db.Reaper.findOne({ _id: '1' });
+        const reaper = await client.db.Reaper.findOne({ _id: '1' });
         if (reaper) {
           if (reaper.databaseExclude.find(item => item._id === reps._id)) {
             await client.db.Guilds.deleteOne({ _id: reps._id });
