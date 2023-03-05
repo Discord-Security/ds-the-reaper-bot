@@ -51,17 +51,19 @@ client.trySend = async (channelID, guild, message, errorMessage) => {
     });
 };
 
-process.on('unhandledRejection', error => {
+process.on('unhandledRejection', async error => {
   console.log(error);
-  client.channels.cache
-    .get(client.canais.errors)
-    .send({ content: 'Erro detectado: \n' + error });
+  const lista = await new discord.AttachmentBuilder(Buffer.from(error), {
+    name: 'unhandledRejection.txt',
+  });
+  client.channels.cache.get(client.canais.errors).send({ files: [lista] });
 });
-process.on('uncaughtException', error => {
+process.on('uncaughtException', async error => {
   console.log(error);
-  client.channels.cache
-    .get(client.canais.errors)
-    .send({ content: 'Erro detectado: \n' + error });
+  const lista = await new discord.AttachmentBuilder(Buffer.from(error), {
+    name: 'uncaughtException.txt',
+  });
+  client.channels.cache.get(client.canais.errors).send({ files: [lista] });
 });
 
 schedule.scheduleJob('00 16 * * 1', async function () {
@@ -92,20 +94,20 @@ schedule.scheduleJob('00 16 * * 1', async function () {
           })
           .catch(async err => {
             if (err) console.log(err);
-            const doc = await client.db.Guilds.findOne({ _id: p._id })
+            const doc = await client.db.Guilds.findOne({ _id: p._id });
             if (doc) {
               client.channels.cache.get(client.canais.strikes).send({
                 content: `Servidor ${p._id} falhou ao enviar mensagem de parcerias: \n\n\`\`\`${err}\`\`\`\n\nPara tentar reativar sem nenhum erro, cumpra o que o erro peça e use novamente o comando de /parceria canal`,
               });
               doc.partneractivated = false;
               doc.save();
-            };
+            }
           });
       });
     }, 15000 * i++);
   });
 });
-  
+
 const boilerplateComponents = async () => {
   await require('./src/util/boilerplateClient')(client);
 };
