@@ -152,7 +152,7 @@ module.exports = async (client, message) => {
   let msg = message.content;
 
   const emojis = msg.match(/(?<=:)([^:\s]+)(?=:)/g);
-  if (!emojis) return;
+  if (!emojis || message.partial) return;
   emojis.forEach(m => {
     const emoji = client.emojis.cache.find(x => x.name === m);
     if (!emoji) return;
@@ -162,7 +162,7 @@ module.exports = async (client, message) => {
     else msg = msg.replace(new RegExp(':' + m + ':', 'g'), emoji.toString());
   });
 
-  if (msg !== message.content) {
+  if (msg !== message.content && !message.author.premiumSince) {
     let webhook = await message.channel.fetchWebhooks();
     const number = randomNumber(1, 2);
     function randomNumber(min, max) {
