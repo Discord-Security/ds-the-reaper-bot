@@ -168,7 +168,7 @@ module.exports = {
               .join('\n')}`,
           );
         interaction.reply({
-          content: `Aqui está o que achei, no total são ${bans.length} banidos pelo motivo filtrado:`,
+          content: `No total são ${bans.length} banidos pelo motivo filtrado:`,
           embeds: [emb],
         });
         break;
