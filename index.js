@@ -53,14 +53,17 @@ client.trySend = async (channelID, guild, message, errorMessage) => {
 
 process.on('unhandledRejection', async error => {
   console.log(error);
-  const lista = await new discord.AttachmentBuilder(error, {
-    name: 'unhandledRejection.txt',
-  });
+  const lista = await new discord.AttachmentBuilder(
+    Buffer.from(error.toString()),
+    {
+      name: 'unhandledRejection.txt',
+    },
+  );
   client.channels.cache.get(client.canais.errors).send({ files: [lista] });
 });
 process.on('uncaughtException', async error => {
   console.log(error);
-  const lista = await new discord.AttachmentBuilder(error, {
+  const lista = await new discord.AttachmentBuilder(Buffer.from(error.toString()), {
     name: 'uncaughtException.txt',
   });
   client.channels.cache.get(client.canais.errors).send({ files: [lista] });
