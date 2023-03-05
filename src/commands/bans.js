@@ -146,6 +146,10 @@ module.exports = {
           }
         }
 
+        if (bans.length === 0)
+          return interaction.reply({
+            content: 'Não encontrei nenhum dado para o motivo filtrado.',
+          });
         const emb = new discord.EmbedBuilder()
           .setTimestamp()
           .setTitle('Banimentos filtrados por: ' + motivo)
