@@ -83,6 +83,12 @@ module.exports = {
         .setName('exportar')
         .setNameLocalizations({ 'pt-BR': 'exportar', 'en-US': 'export' })
         .setDescription('Exportar o conteúdo da mensagem de welcome.'),
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('testar')
+        .setNameLocalizations({ 'pt-BR': 'testar', 'en-US': 'test' })
+        .setDescription('Teste a entrada com você mesmo.'),
     ),
   async execute(interaction, client) {
     const subcommand = interaction.options._subcommand;
@@ -199,6 +205,10 @@ module.exports = {
           ephemeral: true,
         });
         break;
+      }
+      case 'testar': {
+        interaction.deferReply();
+        client.emit('guildMemberAdd', interaction.member);
       }
     }
   },
