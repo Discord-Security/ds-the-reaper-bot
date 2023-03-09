@@ -19,24 +19,27 @@ module.exports = async (client, message) => {
           name: 'Conteúdo da Mensagem:',
           value: message.content.substr(0, 1024)
             ? message.content.substr(0, 1024)
-            : 'Nada'
+            : 'Nada',
         },
         { name: 'Canal:', value: `<#${message.channel.id}>` },
         message.attachments.size >= 1
           ? {
               name: 'Arquivos:',
-              value: `${message.attachments.map(a => a.url)}`
+              value: `${message.attachments.map(a => a.url)}`,
             }
           : {
               name: 'Arquivos:',
-              value: 'Sem arquivos encontrados nesta mensagem.'
-            }
+              value: 'Sem arquivos encontrados nesta mensagem.',
+            },
       )
       .setImage('https://i.imgur.com/Youft1w.png')
       .setFooter({ text: 'ID do Usuário: ' + message.author.id });
 
-    client.channels.cache
-      .get(doc.logs.deletedMessage)
-      .send({ embeds: [embed] });
+    client.trySend(
+      doc.logs.deletedMessage,
+      message.guild,
+      { embeds: [embed] },
+      'logs de entrada de membros',
+    );
   }
 };
