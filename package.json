@@ -20,7 +20,7 @@
     "fs": "^0.0.1-security",
     "img-url-to-imgur": "^1.0.0",
     "moment": "^2.29.4",
-    "mongoose": "^7.0.0",
+    "mongoose": "^7.0.1",
     "mongoose-paginate-v2": "^1.7.1",
     "ms-pt-br": "^2.1.4",
     "node-schedule": "^2.1.0",
