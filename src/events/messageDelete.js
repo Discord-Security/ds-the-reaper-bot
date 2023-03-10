@@ -39,7 +39,7 @@ module.exports = async (client, message) => {
       doc.logs.deletedMessage,
       message.guild,
       { embeds: [embed] },
-      'logs de entrada de membros',
+      'logs de mensagem apagada',
     );
   }
 };

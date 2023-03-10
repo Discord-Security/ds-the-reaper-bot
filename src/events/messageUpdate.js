@@ -22,28 +22,33 @@ module.exports = async (client, oldmessage, message) => {
           name: 'Conteúdo da Mensagem Antigo: ',
           value: oldmessage.content.substr(0, 1024)
             ? oldmessage.content.substr(0, 1024)
-            : 'Nada'
+            : 'Nada',
         },
         {
           name: 'Conteúdo da Mensagem Novo:',
           value: message.content.substr(0, 1024)
             ? message.content.substr(0, 1024)
-            : 'Nada'
+            : 'Nada',
         },
         { name: 'Canal:', value: `<#${message.channel.id}>` },
         message.attachments.size >= 1
           ? {
               name: 'Arquivos:',
-              value: `${message.attachments.map(a => a.url)}`
+              value: `${message.attachments.map(a => a.url)}`,
             }
           : {
               name: 'Arquivos:',
-              value: 'Sem arquivos encontrados nesta mensagem.'
-            }
+              value: 'Sem arquivos encontrados nesta mensagem.',
+            },
       ])
       .setImage('https://i.imgur.com/thr2RcM.png')
       .setFooter({ text: 'ID do Usuário: ' + message.author.id });
 
-    client.channels.cache.get(doc.logs.editedMessage).send({ embeds: [embed] });
+    client.trySend(
+      doc.logs.editedMessage,
+      message.guild,
+      { embeds: [embed] },
+      'logs de mensagem editada',
+    );
   }
 };
