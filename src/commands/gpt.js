@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const { BingChat } = await import('bing-chat');
+const { BingChat } = import('bing-chat');
 
 module.exports = {
   data: new discord.SlashCommandBuilder()
