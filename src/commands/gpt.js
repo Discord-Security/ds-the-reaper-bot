@@ -1,5 +1,4 @@
 const discord = require('discord.js');
-const { BingChat } = import('bing-chat');
 
 module.exports = {
   data: new discord.SlashCommandBuilder()
@@ -13,6 +12,7 @@ module.exports = {
     ),
   async execute(interaction, client) {
     const prompt = interaction.options.getString('prompt');
+    const { BingChat } = await import('bing-chat');
     const api = new BingChat({
       cookie: process.env.BING_COOKIE,
     });
