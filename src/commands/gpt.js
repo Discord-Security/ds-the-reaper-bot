@@ -7,7 +7,7 @@ module.exports = {
     .addStringOption(option =>
       option
         .setName('prompt')
-        .setDescription('Você gostaria de deletar os canais de qual categoria?')
+        .setDescription('Escreva algo no prompt e eu te responderei!')
         .setRequired(true),
     ),
   async execute(interaction, client) {
