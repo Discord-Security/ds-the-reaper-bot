@@ -77,7 +77,7 @@ module.exports = {
         iconURL: interaction.guild.iconURL({
           dynamic: true,
           format: 'jpeg',
-          size: '128',
+          size: 128
         }),
       });
 

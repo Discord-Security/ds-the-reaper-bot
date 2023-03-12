@@ -16,6 +16,10 @@ module.exports = async (client, interaction) => {
   if (interaction.isStringSelectMenu()) {
     require('../menu/' + interaction.values[0])(client, interaction);
   }
+  if (interaction.isAutocomplete()) {
+    const command = client.commands.get(interaction.commandName);
+    command.autocomplete(interaction);
+  }
   if (interaction.isChatInputCommand()) {
     const command = client.commands.get(interaction.commandName);
     if (!command) return;

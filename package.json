@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@discordjs/rest": "^1.5.0",
+    "bing-chat": "^0.2.1",
     "chalk-advanced": "^1.0.3",
     "discord-api-types": "^0.37.35",
     "discord-backup": "^3.3.2",

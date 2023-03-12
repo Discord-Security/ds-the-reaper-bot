@@ -23,17 +23,22 @@ module.exports = async (client, member) => {
         .addFields({ name: 'Tag:', value: member.user.tag })
         .setFooter({ text: 'ID do Usuário: ' + member.user.id });
 
-      client.channels.cache.get(doc.logs.leftMember).send({ embeds: [embed] });
+      client.trySend(
+        doc.logs.leftMember,
+        member.guild,
+        { embeds: [embed] },
+        'logs de saída de membros',
+      );
     }
     if (
       doc.logs.punishments !== '' &&
       doc.logs.punishments !== undefined &&
       doc.logs.punishments !== null
     ) {
-      try {
+
         const fetchedLogs = await member.guild.fetchAuditLogs({
           limit: 1,
-          type: 20
+          type: 20,
         });
         const kickLog = fetchedLogs.entries.first();
 
@@ -57,19 +62,19 @@ module.exports = async (client, member) => {
                 executor.id || 'Desconhecido'
               }\`\n\n<:Discord_Chat:1035624171960541244> **Motivo:**\n\`${
                 kickLog.reason || 'Sem Motivo'
-              }\``
+              }\``,
             )
             .setColor(client.cor);
           client.channels.cache
             .get(doc.logs.punishments)
             .send({ embeds: [emb] });
+          client.trySend(
+            doc.logs.punishments,
+            member.guild,
+            { embeds: [emb] },
+            'logs de punições (Kick)',
+          );
         }
-      } catch (err) {
-        client.channels.cache.get(client.canais.strikes).send({
-          content: `<@${member.guild.ownerId}>, seu servidor ${member.guild.name} falhou ao enviar mensagem do log de punições (Kick): ${err}`
-        });
-        if (err.code === 'EPIPE') process.exit(1);
-      }
     }
     if (
       doc &&
@@ -86,14 +91,14 @@ module.exports = async (client, member) => {
       const tag = member.user.tag;
       const avatar = await member.user.displayAvatarURL({
         extension: 'png',
-        dynamic: true
+        dynamic: true,
       });
       const membro = `<@${member.user.id}>`;
       const serverNome = member.guild.name;
       const serverId = member.guild.id;
       const serverIcon = await member.guild.iconURL({
         extension: 'png',
-        dynamic: true
+        dynamic: true,
       });
 
       const replaced = await doc.exit.content
@@ -121,7 +126,7 @@ module.exports = async (client, member) => {
         })
         .catch(err => {
           client.channels.cache.get(client.canais.strikes).send({
-            content: `<@${member.guild.ownerId}>, seu servidor ${member.guild.name} falhou ao enviar mensagem de saída: ${err}`
+            content: `<@${member.guild.ownerId}>, seu servidor ${member.guild.name} falhou ao enviar mensagem de saída: ${err}`,
           });
         });
     }

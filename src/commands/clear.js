@@ -35,8 +35,8 @@ module.exports = {
     const clean = interaction.options.getInteger('mensagens');
     const member = interaction.options.getUser('membro');
     if (member) {
-      interaction.channel
-        .messages.fetch({
+      return interaction.channel.messages
+        .fetch({
           limit: clean,
         })
         .then(messages => {
@@ -53,7 +53,7 @@ module.exports = {
             });
         });
     } else {
-      interaction.channel.bulkDelete(clean, true).then(() => {
+      return interaction.channel.bulkDelete(clean, true).then(() => {
         interaction.reply({
           content: `Limpei ${clean.toString()} mensagens.`,
           ephemeral: true,
