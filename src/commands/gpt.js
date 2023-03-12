@@ -11,33 +11,35 @@ module.exports = {
         .setRequired(true),
     ),
   async execute(interaction, client) {
-    const prompt = interaction.options.getString('prompt');
-    const { BingChat } = await import('bing-chat');
-    const api = new BingChat({
-      cookie: process.env.BING_COOKIE,
-    });
+    // Single Prompt
+    const { fetch } = require('undici');
 
-    interaction.deferReply();
+    (async () => {
+      const response = await fetch('https://bing.khanh.lol/completion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: interaction.options.getString('prompt'),
+        }),
+      });
+      const data = await response.json();
 
-    const res = await api.sendMessage(prompt).catch(err => {
-      if (err)
-        interaction.editReply({
+      if (data.response.size > 0)
+        return interaction.editReply({
+          content: data.response
+            .replace('Bing', 'The Reaper')
+            .replace('Sydney', 'The Reaper')
+            .replace(/\[\^\d+\^]/g, '')
+            .replace('@everyone', 'everyone')
+            .replace('@here', 'here'),
+        });
+      else
+        return interaction.editReply({
           content:
             'Consegui falhar miseravelmente ao tentar ter uma resposta, maldito GPT me bloqueando :(',
         });
-    });
-    if (res.text.size > 0)
-      return interaction.editReply({
-        content: res.text
-          .replace('Bing', 'The Reaper')
-          .replace(/\[\^\d+\^]/g, '')
-          .replace('@everyone', 'everyone')
-          .replace('@here', 'here'),
-      });
-    else
-      return interaction.editReply({
-        content:
-          'Consegui falhar miseravelmente ao tentar ter uma resposta, maldito GPT me bloqueando :(',
-      });
+    })();
   },
 };
