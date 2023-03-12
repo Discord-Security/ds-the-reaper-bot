@@ -11,7 +11,7 @@ module.exports = {
         .setRequired(true),
     ),
   async execute(interaction, client) {
-    // Single Prompt
+    interaction.deferReply();
     const { fetch } = require('undici');
 
     (async () => {
