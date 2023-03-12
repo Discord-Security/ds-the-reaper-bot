@@ -19,19 +19,25 @@ module.exports = {
 
     interaction.deferReply();
 
-    const res = await api.sendMessage(prompt).catch(async err => {
+    const res = await api.sendMessage(prompt).catch(err => {
       if (err)
         interaction.editReply({
           content:
             'Consegui falhar miseravelmente ao tentar ter uma resposta, maldito GPT me bloqueando :(',
         });
     });
-    interaction.editReply({
-      content: res.text
-        .replace('Bing', 'The Reaper')
-        .replace(/\[\^\d+\^]/g, '')
-        .replace('@everyone', 'everyone')
-        .replace('@here', 'here'),
-    });
+    if (res.text.size > 0)
+      return interaction.editReply({
+        content: res.text
+          .replace('Bing', 'The Reaper')
+          .replace(/\[\^\d+\^]/g, '')
+          .replace('@everyone', 'everyone')
+          .replace('@here', 'here'),
+      });
+    else
+      return interaction.editReply({
+        content:
+          'Consegui falhar miseravelmente ao tentar ter uma resposta, maldito GPT me bloqueando :(',
+      });
   },
 };
