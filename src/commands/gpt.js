@@ -12,7 +12,7 @@ module.exports = {
         .setRequired(true),
     ),
   async execute(interaction, client) {
-    interaction.deferReply();
+    await interaction.deferReply();
     const response = await fetch('https://bing.khann.lol/completion', {
       method: 'POST',
       headers: {
