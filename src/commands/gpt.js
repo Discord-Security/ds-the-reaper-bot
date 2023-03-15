@@ -21,7 +21,7 @@ module.exports = {
       body: JSON.stringify({
         prompt: interaction.options.getString('prompt'),
       }),
-    });
+    }).catch(() => gpt());
     const data = await response.json();
 
     if (data.response.size > 0)
@@ -33,7 +33,8 @@ module.exports = {
           .replace('@everyone', 'everyone')
           .replace('@here', 'here'),
       });
-    else {
+    else gpt();
+    async function gpt() {
       const { ChatGPTUnofficialProxyAPI } = await import('chatgpt');
       const accounts = [
         client.OPENAI_ACCESS_TOKEN1(),
