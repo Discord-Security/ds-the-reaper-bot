@@ -37,8 +37,8 @@ module.exports = {
     async function gpt() {
       const { ChatGPTUnofficialProxyAPI } = await import('chatgpt');
       const accounts = [
-        client.OPENAI_ACCESS_TOKEN1(),
-        client.OPENAI_ACCESS_TOKEN2(),
+        client.OPENAI_ACCESS_TOKEN1,
+        client.OPENAI_ACCESS_TOKEN2,
       ];
       const backends = ['https://gpt.pawan.krd/backend-api/conversation'];
       const api = new ChatGPTUnofficialProxyAPI({

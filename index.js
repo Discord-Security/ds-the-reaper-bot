@@ -1,7 +1,7 @@
 const discord = require('discord.js');
 const schedule = require('node-schedule');
 require('dotenv').config();
-const { Authenticator } = import('openai-token');
+const { Authenticator } = import('openai-authenticator');
 
 const client = new discord.Client({
   intents: 3276799,
@@ -25,24 +25,14 @@ client.canais = {
   strikes: '1039126395445596180',
   errors: '1025774984402059438',
 };
-client.OPENAI_ACCESS_TOKEN1 = async () => {
-  const auth = new Authenticator(
-    process.env.CHATGPT1_EMAIL,
-    process.env.CHATGPT1_PASSWORD,
-  );
-  await auth.begin();
-  const token = await auth.getAccessToken();
-  return token;
-};
-client.OPENAI_ACCESS_TOKEN2 = async () => {
-  const auth = new Authenticator(
-    process.env.CHATGPT2_EMAIL,
-    process.env.CHATGPT2_PASSWORD,
-  );
-  await auth.begin();
-  const token = await auth.getAccessToken();
-  return token;
-};
+client.OPENAI_ACCESS_TOKEN1 = new Authenticator().login(
+  process.env.CHATGPT1_EMAIL,
+  process.env.CHATGPT1_PASSWORD,
+);
+client.OPENAI_ACCESS_TOKEN2 = new Authenticator().login(
+  process.env.CHATGPT2_EMAIL,
+  process.env.CHATGPT2_PASSWORD,
+);
 /**
  * Tenta enviar uma mensagem para um canal específico.
  * @param {string} channelID - O ID do canal.
@@ -82,9 +72,12 @@ process.on('unhandledRejection', async error => {
 });
 process.on('uncaughtException', async error => {
   console.log(error);
-  const lista = await new discord.AttachmentBuilder(Buffer.from(error.toString()), {
-    name: 'uncaughtException.txt',
-  });
+  const lista = await new discord.AttachmentBuilder(
+    Buffer.from(error.toString()),
+    {
+      name: 'uncaughtException.txt',
+    },
+  );
   client.channels.cache.get(client.canais.errors).send({ files: [lista] });
 });
 

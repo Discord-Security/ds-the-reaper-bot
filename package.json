@@ -27,7 +27,7 @@
     "ms-pt-br": "^2.1.4",
     "node-schedule": "^2.1.0",
     "nodemon": "2.0.20",
-    "openai-token": "^1.0.0",
+    "openai-authenticator": "^0.0.3",
     "superagent": "^8.0.3",
     "ts-node": "^10.8.1",
     "typescript": "^4.9.5",
