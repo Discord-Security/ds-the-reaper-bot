@@ -1,7 +1,7 @@
 const discord = require('discord.js');
 const schedule = require('node-schedule');
 require('dotenv').config();
-const { Authenticator } = import('openai-authenticator');
+const Authenticator = import('openai-authenticator');
 
 const client = new discord.Client({
   intents: 3276799,
