@@ -1,6 +1,7 @@
 const discord = require('discord.js');
 const schedule = require('node-schedule');
 require('dotenv').config();
+const { Authenticator } = import('openai-token');
 
 const client = new discord.Client({
   intents: 3276799,
@@ -23,6 +24,24 @@ client.canais = {
   raidAlerts: '1053827079000571936',
   strikes: '1039126395445596180',
   errors: '1025774984402059438',
+};
+client.OPENAI_ACCESS_TOKEN1 = async () => {
+  const auth = new Authenticator(
+    process.env.CHATGPT1_EMAIL,
+    process.env.CHATGPT1_PASSWORD,
+  );
+  await auth.begin();
+  const token = await auth.getAccessToken();
+  return token;
+};
+client.OPENAI_ACCESS_TOKEN2 = async () => {
+  const auth = new Authenticator(
+    process.env.CHATGPT2_EMAIL,
+    process.env.CHATGPT2_PASSWORD,
+  );
+  await auth.begin();
+  const token = await auth.getAccessToken();
+  return token;
 };
 /**
  * Tenta enviar uma mensagem para um canal específico.
