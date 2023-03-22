@@ -35,7 +35,7 @@ module.exports = {
       });
     else gpt();
     async function gpt() {
-      const { ChatGPTUnofficialProxyAPI } = await import('chatgpt');
+      /* const { ChatGPTUnofficialProxyAPI } = await import('chatgpt');
       const accounts = [
         client.OPENAI_ACCESS_TOKEN1,
         client.OPENAI_ACCESS_TOKEN2,
@@ -55,7 +55,11 @@ module.exports = {
                 'Consegui falhar miseravelmente ao tentar ter uma resposta, maldito GPT me bloqueando :(',
             });
         });
-      interaction.editReply({ content: res.text });
+      interaction.editReply({ content: res.text }); */
+      interaction.editReply({
+        content:
+          'Consegui falhar miseravelmente ao tentar ter uma resposta, maldito GPT me bloqueando :(',
+      });
     }
   },
 };
