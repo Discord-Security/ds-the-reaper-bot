@@ -1,7 +1,6 @@
 const discord = require('discord.js');
 const schedule = require('node-schedule');
 require('dotenv').config();
-// const { ChatGPTAuthTokenService } = require('chat-gpt-authenticator');
 
 const client = new discord.Client({
   intents: 3276799,
@@ -25,16 +24,6 @@ client.canais = {
   strikes: '1039126395445596180',
   errors: '1025774984402059438',
 };
-
-/* client.OPENAI_ACCESS_TOKEN1 = new ChatGPTAuthTokenService(
-  process.env.CHATGPT1_EMAIL,
-  process.env.CHATGPT1_PASSWORD,
-).getToken();
-client.OPENAI_ACCESS_TOKEN2 = new ChatGPTAuthTokenService(
-  process.env.CHATGPT2_EMAIL,
-  process.env.CHATGPT2_PASSWORD,
-).getToken();
-*/
 
 /**
  * Tenta enviar uma mensagem para um canal específico.
