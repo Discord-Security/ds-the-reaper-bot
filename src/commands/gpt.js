@@ -22,7 +22,7 @@ module.exports = {
         prompt: interaction.options.getString('prompt'),
       }),
     }).catch(() => gpt());
-    const data = await response.json();
+    const data = await response;
 
     if (data.response.size > 0)
       return interaction.editReply({
