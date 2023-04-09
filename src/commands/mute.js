@@ -37,8 +37,19 @@ module.exports = {
           'pt-BR': 'motivo',
           'en-US': 'reason',
         })
+        .setAutocomplete(true)
         .setDescription('Identifique o motivo do castigo'),
     ),
+  async autocomplete(interaction) {
+    const focusedValue = interaction.options.getFocused();
+    const choices = require('../../reasons.json');
+    const filtered = choices.filter(choice =>
+      choice.toLowerCase().includes(focusedValue.toLowerCase()),
+    );
+    await interaction.respond(
+      filtered.map(choice => ({ name: choice, value: choice })),
+    );
+  },
   async execute(interaction, client) {
     const member = interaction.options.getMember('usuário');
     const reason =

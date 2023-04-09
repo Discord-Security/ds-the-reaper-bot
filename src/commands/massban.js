@@ -43,8 +43,19 @@ module.exports = {
       option
         .setName('motivo')
         .setNameLocalizations({ 'pt-BR': 'motivo', 'en-US': 'reason' })
-        .setDescription('Identifique um motivo.'),
+        .setDescription('Identifique um motivo.')
+        .setAutocomplete(true),
     ),
+  async autocomplete(interaction) {
+    const focusedValue = interaction.options.getFocused();
+    const choices = require('../../reasons.json');
+    const filtered = choices.filter(choice =>
+      choice.toLowerCase().includes(focusedValue.toLowerCase()),
+    );
+    await interaction.respond(
+      filtered.map(choice => ({ name: choice, value: choice })),
+    );
+  },
   async execute(interaction, client) {
     const gravidade = interaction.options.getInteger('gravidade');
     const usuario = interaction.options.getString('ids').split(' ');

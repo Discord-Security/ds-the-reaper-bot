@@ -21,8 +21,19 @@ module.exports = {
         .setName('motivo')
         .setNameLocalizations({ 'pt-BR': 'motivo', 'en-US': 'reason' })
         .setDescription('Identifique um motivo para o aviso')
+        .setAutocomplete(true)
         .setRequired(true),
     ),
+  async autocomplete(interaction) {
+    const focusedValue = interaction.options.getFocused();
+    const choices = require('../../reasons.json');
+    const filtered = choices.filter(choice =>
+      choice.toLowerCase().includes(focusedValue.toLowerCase()),
+    );
+    await interaction.respond(
+      filtered.map(choice => ({ name: choice, value: choice })),
+    );
+  },
   async execute(interaction, client) {
     const membro = interaction.options.getMember('usuário');
     const motivo = `${interaction.guild.name} - ${interaction.options.getString(

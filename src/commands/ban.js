@@ -40,25 +40,10 @@ module.exports = {
     ),
   async autocomplete(interaction) {
     const focusedValue = interaction.options.getFocused();
-    const choices = [
-      '[regras gerais] Desrespeitar as regras do servidor ou do grupo',
-      'Fazer spam, flood, divulgação ou propaganda não autorizada',
-      '[desrespeito] Usar palavras ofensivas, racistas, homofóbicas ou discriminatórias',
-      'Apologia ao nazismo',
-      'Incentivo ao ódio',
-      '[nsfw] Enviar conteúdo impróprio, ilegal ou pornográfico',
-      'Mencionar staffs/cargos sem motivo ou de forma abusiva',
-      'Usar comandos de bots fora do canal adequado',
-      'Fazer falsas denúncias ou acusações',
-      '[doxxing] Espalhar informações pessoais de outras pessoas',
-      'Pertubando utilizadores em canais de voz',
-      '[raid] Tentativa ou ataque real ao servidor',
-      '[pedofilia] Conversas ou conteúdos sobre atitudes sexuais com menores de 18 anos',
-      '[alt] Uso de contas secundárias para acesso ao servidor',
-      'Descumprimento da TOS',
-      
-    ];
-    const filtered = choices.filter(choice => choice.toLowerCase().includes(focusedValue.toLowerCase()));
+    const choices = require('../../reasons.json');
+    const filtered = choices.filter(choice =>
+      choice.toLowerCase().includes(focusedValue.toLowerCase()),
+    );
     await interaction.respond(
       filtered.map(choice => ({ name: choice, value: choice })),
     );

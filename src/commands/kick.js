@@ -28,8 +28,19 @@ module.exports = {
           'pt-BR': 'motivo',
           'en-US': 'reason',
         })
+        .setAutocomplete(true)
         .setDescription('Qual o motivo da expulsão?'),
     ),
+  async autocomplete(interaction) {
+    const focusedValue = interaction.options.getFocused();
+    const choices = require('../../reasons.json');
+    const filtered = choices.filter(choice =>
+      choice.toLowerCase().includes(focusedValue.toLowerCase()),
+    );
+    await interaction.respond(
+      filtered.map(choice => ({ name: choice, value: choice })),
+    );
+  },
   async execute(interaction, client) {
     const user = interaction.options.getMember('usuário');
     const reason =

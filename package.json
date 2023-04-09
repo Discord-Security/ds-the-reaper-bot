@@ -10,34 +10,34 @@
     "format:fix": "prettier --write ."
   },
   "dependencies": {
-    "@discordjs/rest": "^1.5.0",
+    "@discordjs/rest": "^1.7.0",
     "chalk-advanced": "^1.0.3",
-    "discord-api-types": "^0.37.35",
+    "discord-api-types": "^0.37.37",
     "discord-backup": "^3.3.2",
-    "discord.js": "^14.7.1",
+    "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "img-url-to-imgur": "^1.0.0",
     "moment": "^2.29.4",
-    "mongoose": "^7.0.1",
+    "mongoose": "^7.0.3",
     "mongoose-paginate-v2": "^1.7.1",
     "ms-pt-br": "^2.1.4",
     "node-schedule": "^2.1.0",
-    "nodemon": "2.0.20",
+    "nodemon": "2.0.22",
     "superagent": "^8.0.3",
     "ts-node": "^10.8.1",
-    "typescript": "^4.9.5",
-    "undici": "^5.20.0"
+    "typescript": "^5.0.4",
+    "undici": "^5.21.2"
   },
   "devDependencies": {
-    "eslint": "^8.34.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-config-semistandard": "^17.0.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.6.0",
+    "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
-    "prettier": "2.8.4"
+    "prettier": "2.8.7"
   }
 }
