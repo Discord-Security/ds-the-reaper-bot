@@ -71,6 +71,20 @@ module.exports = async client => {
     });
   }
 
+  const AutoMsg = await client.db.Guilds.find({
+    automessage: { $exists: true },
+  });
+
+  if (AutoMsg) {
+    AutoMsg.automessage.forEach(async autoMsg => {
+      const doc = await client.db.Guilds.findOne({ _id: AutoMsg._id });
+      setInterval(() => {
+        if (doc.automessage.find(c => c._id === autoMsg._id))
+          client.channels.cache.get(autoMsg.channel).send(autoMsg._id);
+      }, autoMsg.interval);
+    });
+  }
+
   const lockdownsForComplete = await client.db.Guilds.find({
     lockdownTime: { $exists: true },
   });
