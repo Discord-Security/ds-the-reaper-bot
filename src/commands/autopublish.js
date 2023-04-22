@@ -19,7 +19,7 @@ module.exports = {
             .setName('canal')
             .setNameLocalizations({ 'pt-BR': 'canal', 'en-US': 'channel' })
             .setDescription('Identifique o canal')
-            .addChannelTypes(discord.ChannelType.GuildNews)
+            .addChannelTypes(discord.ChannelType.GuildAnnouncement)
             .setRequired(true),
         ),
     )
@@ -33,7 +33,7 @@ module.exports = {
             .setName('canal')
             .setNameLocalizations({ 'pt-BR': 'canal', 'en-US': 'channel' })
             .setDescription('Identifique o canal')
-            .addChannelTypes(discord.ChannelType.GuildNews)
+            .addChannelTypes(discord.ChannelType.GuildAnnouncement)
             .setRequired(true),
         ),
     )
