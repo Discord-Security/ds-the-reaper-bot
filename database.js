@@ -69,6 +69,13 @@ const guildSchema = new Schema({
     action: { type: String, default: 'Kick' },
     channel: String,
   },
+  automessage: [
+    {
+      _id: String,
+      channel: String,
+      interval: Number,
+    },
+  ],
   backup: {
     password: String,
   },
