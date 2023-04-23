@@ -76,13 +76,17 @@ module.exports = async client => {
   });
 
   if (AutoMsg) {
-    AutoMsg.automessage.forEach(async autoMsg => {
-      const doc = await client.db.Guilds.findOne({ _id: AutoMsg._id });
-      setInterval(() => {
-        if (doc.automessage.find(c => c._id === autoMsg._id))
-          client.channels.cache.get(autoMsg.channel).send(autoMsg._id);
-      }, autoMsg.interval);
-    });
+    AutoMsg.automessage
+      .forEach(async autoMsg => {
+        const doc = await client.db.Guilds.findOne({ _id: AutoMsg._id });
+        setInterval(() => {
+          if (doc.automessage.find(c => c._id === autoMsg._id))
+            client.channels.cache.get(autoMsg.channel).send(autoMsg._id);
+        }, autoMsg.interval);
+      })
+      .catch(() => {
+        return 0;
+      });
   }
 
   const lockdownsForComplete = await client.db.Guilds.find({
