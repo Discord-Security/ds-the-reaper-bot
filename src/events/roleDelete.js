@@ -28,9 +28,9 @@ module.exports = async (client, role) => {
       },
       {
         name: '🆔 Cargo',
-        value: `${
+        value: `**${
           role.name !== null || role.name !== undefined ? role.name : ''
-        } ${role.id}`,
+        }** ${role.id}`,
         inline: true,
       },
       {
