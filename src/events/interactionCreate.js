@@ -18,7 +18,7 @@ module.exports = async (client, interaction) => {
   }
   if (interaction.isAutocomplete()) {
     const command = client.commands.get(interaction.commandName);
-    command.autocomplete(interaction);
+    command.autocomplete(interaction, client);
   }
   if (interaction.isChatInputCommand()) {
     const command = client.commands.get(interaction.commandName);

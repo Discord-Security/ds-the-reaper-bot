@@ -58,7 +58,18 @@ module.exports = {
         .setNameLocalizations({ 'pt-BR': 'lista', 'en-US': 'list' })
         .setDescription('Lista todas as mensagens do sistema.'),
     ),
-  async autocomplete(interaction, client) {},
+  async autocomplete(interaction, client) {
+    const focusedValue = interaction.options.getFocused();
+    const choices = await client.db.Guilds.findOne({
+      _id: interaction.guild.id,
+    }).automessage;
+    const filtered = choices.filter(choice =>
+      choice._id.toLowerCase().includes(focusedValue.toLowerCase()),
+    );
+    await interaction.respond(
+      filtered.map(choice => ({ name: choice._id, value: choice._id })),
+    );
+  },
   async execute(interaction, client) {
     const subcommand = interaction.options._subcommand;
     const channel = interaction.options.getChannel('canal') || null;
