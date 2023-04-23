@@ -43,6 +43,13 @@ module.exports = async (client, guild) => {
     .create({
       name: 'reaper',
       type: discord.ChannelType.GuildText,
+      permissionOverwrites: [
+        {
+          id: guild.id,
+          allow: [discord.PermissionFlagsBits.ViewChannel],
+          deny: [discord.PermissionFlagsBits.SendMessages],
+        },
+      ],
     })
     .then(c => {
       const embed = new discord.EmbedBuilder()
