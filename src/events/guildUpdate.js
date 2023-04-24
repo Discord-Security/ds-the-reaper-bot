@@ -4,6 +4,6 @@ module.exports = async (client, oldGuild, newGuild) => {
 
     if (!doc || !doc.roleId) return 0;
     const guild = client.guilds.cache.get(process.env.GUILD_ID);
-    guild.roles.get(doc.roleId).setName(newGuild.name);
+    guild.roles.cache.find(r => r.id === doc.roleId).setName(newGuild.name);
   }
 };
