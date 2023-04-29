@@ -101,6 +101,7 @@ const guildSchema = new Schema({
         type: String,
         default: '{ "content": "**%title**\n%url" }',
       },
+      disabled: Boolean,
     },
   ],
 });
