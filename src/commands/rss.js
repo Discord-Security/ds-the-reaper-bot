@@ -114,8 +114,8 @@ module.exports = {
       const choices = await client.db.Guilds.findOne({
         _id: interaction.guild.id,
       }).rssfeeds;
-      const filtered = choices.filter(
-        choice => choice._id.toLowerCase().includes(focusedValue.value.toLowerCase()),
+      const filtered = choices.filter(choice =>
+        choice._id.toLowerCase().includes(focusedValue.value.toLowerCase()),
       );
       await interaction.respond(
         filtered.map(choice => ({ name: choice._id, value: choice._id })),
@@ -132,7 +132,7 @@ module.exports = {
       case 'criar': {
         const url = interaction.options.getString('url');
         const canal = interaction.options.getChannel('canal');
-        doc.rssfeeds.push({ _id: url, canal: canal.id, disabled: false });
+        doc.rssfeeds.push({ _id: url, channel: canal.id, disabled: false });
         doc.save();
         interaction.reply({ content: 'Feito com sucesso.' });
         break;

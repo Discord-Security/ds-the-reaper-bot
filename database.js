@@ -99,7 +99,7 @@ const guildSchema = new Schema({
       channel: String,
       message: {
         type: String,
-        default: '{ "content": "**%title**\n%url" }',
+        default: '{ "content": "**%title**\\n%url" }',
       },
       disabled: Boolean,
       lastItem: String,
