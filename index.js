@@ -41,13 +41,13 @@ client.trySend = async (channelID, guild, message, errorMessage) => {
     .then(channel => {
       channel.send(message).catch(err => {
         client.channels.cache.get(client.canais.strikes).send({
-          content: `${mention}, seu servidor ${guild.name} falhou ao enviar ${errorMessage}: ${err}`,
+          content: `${mention}, seu servidor **${guild.name}** falhou ao enviar ${errorMessage}:\n\`\`\`${err}\`\`\``,
         });
       });
     })
     .catch(err => {
       client.channels.cache.get(client.canais.strikes).send({
-        content: `${mention}, seu servidor ${guild.name} falhou ao enviar ${errorMessage}: ${err}`,
+        content: `${mention}, seu servidor **${guild.name}** falhou ao enviar ${errorMessage}:\n\`\`\`${err}\`\`\``,
       });
     });
 };

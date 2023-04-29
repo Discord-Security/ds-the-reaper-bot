@@ -93,6 +93,16 @@ const guildSchema = new Schema({
       default: '{ "content": "Obrigado pela parceria %representante!" }',
     },
   },
+  rssfeeds: [
+    {
+      _id: String,
+      channel: String,
+      message: {
+        type: String,
+        default: '{ "content": "**%title**\n%url" }',
+      },
+    },
+  ],
 });
 
 const partnerSchema = new Schema({
