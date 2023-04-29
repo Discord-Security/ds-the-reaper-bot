@@ -115,7 +115,7 @@ module.exports = {
         _id: interaction.guild.id,
       }).rssfeeds;
       const filtered = choices.filter(
-        choice => choice._id.toLowerCase() === focusedValue.value.toLowerCase(),
+        choice => choice._id.toLowerCase().includes(focusedValue.value.toLowerCase()),
       );
       await interaction.respond(
         filtered.map(choice => ({ name: choice._id, value: choice._id })),
