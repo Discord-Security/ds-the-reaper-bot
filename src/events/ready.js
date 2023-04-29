@@ -92,8 +92,8 @@ module.exports = async client => {
           client.channels.cache
             .get(rssFeed.channel)
             .send(message)
-            .then(() => {
-              client.db.Guilds.findOneAndUpdate(
+            .then(async () => {
+              await client.db.Guilds.findOneAndUpdate(
                 {
                   '_id': guild._id,
                   'rssfeeds._id': rssFeed._id,
