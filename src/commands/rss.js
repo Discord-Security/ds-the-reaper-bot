@@ -103,7 +103,7 @@ module.exports = {
         },
       ];
       const filtered = choices.filter(choice =>
-        choice.name.toLowerCase().includes(focusedValue.toLowerCase()),
+        choice.name.toLowerCase().includes(focusedValue.value.toLowerCase()),
       );
       await interaction.respond(
         filtered.map(choice => ({ name: choice.name, value: choice.value })),
