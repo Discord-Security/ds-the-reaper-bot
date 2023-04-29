@@ -24,6 +24,7 @@ client.canais = {
   strikes: '1039126395445596180',
   errors: '1025774984402059438',
 };
+client.request = new (require('rss-parser'))();
 
 /**
  * Tenta enviar uma mensagem para um canal específico.
