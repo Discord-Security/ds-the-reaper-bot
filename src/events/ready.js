@@ -75,7 +75,7 @@ module.exports = async client => {
     automessage: { $exists: true },
   });
 
-  if (AutoMsg) {
+  if (AutoMsg && AutoMsg.automessage.length > 0) {
     AutoMsg.automessage
       .map(async autoMsg => {
         const doc = await client.db.Guilds.findOne({ _id: AutoMsg._id });
@@ -92,9 +92,9 @@ module.exports = async client => {
   const lockdownsForComplete = await client.db.Guilds.find({
     lockdownTime: { $exists: true },
   });
-  if (lockdownsForComplete.length > 1) {
-    lockdownsForComplete.maps(document => {
-      schedule.scheduleJob(document.lockdownTime, async function () {
+  if (lockdownsForComplete.length > 0) {
+    lockdownsForComplete.map(document => {
+      return schedule.scheduleJob(document.lockdownTime, async function () {
         await client.db.Guilds.updateOne(
           { _id: document._id },
           { $unset: { lockdownTime: 1 } },
