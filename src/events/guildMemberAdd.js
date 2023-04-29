@@ -1,6 +1,4 @@
 const discord = require('discord.js');
-// eslint-disable-next-line no-unused-vars
-const superagent = require('superagent');
 
 module.exports = async (client, member) => {
   if (member.user.bot) return 0;
@@ -10,60 +8,6 @@ module.exports = async (client, member) => {
       member.user.tag
     }** entrou em **${member.guild.name}** (ID: ${member.user.id})`,
   });
-
-  // Sistema Putchie
-  /* superagent
-    .get(
-      'https://floppapower.perfectdreams.net/api/v1/blocked-users/' +
-        member.user.id,
-    )
-    .then(body => {
-      if (body.valid && body.valid !== false) {
-        const embed = new discord.EmbedBuilder()
-          .setColor(client.cor)
-          .setTitle('Banimento Putchie - ' + member.guild.name)
-          .addFields(
-            {
-              name: '<:Discord_Star:1038602481640407050> Moderador',
-              value: 'The Reaper com ajuda de Putchie',
-              inline: true,
-            },
-            {
-              name: '<:Discord_Danger:1028818835148656651> Réu',
-              value: `${member.user.id}`,
-              inline: true,
-            },
-            {
-              name: '<:Discord_Online:1035624222338334770> Gravidade',
-              value: '1',
-              inline: true,
-            },
-            {
-              name: '<:Discord_Chat:1035624171960541244> Motivo',
-              value:
-                'Putchie viu de fontes confiáveis, atividades suspeitas deste utilizador.',
-              inline: true,
-            },
-          );
-        client.channels.cache.get(client.canais.logs).send({
-          embeds: [embed],
-        });
-        member.ban({
-          reason: 'Banido automaticamente pelo sistema Putchie.',
-        });
-      }
-    })
-    .catch(err => {
-      if (err.status === 404) return 0;
-      else {
-        const list = new discord.AttachmentBuilder(Buffer.from(err), {
-          name: 'putchieError.txt',
-        });
-        client.channels.cache
-          .get(client.canais.errors)
-          .send({ content: 'Erro detectado: \n' + err, files: [list] });
-      }
-    }); */
 
   const doc = await client.db.Guilds.findOne({ _id: member.guild.id });
 
