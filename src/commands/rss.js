@@ -111,15 +111,23 @@ module.exports = {
     }
 
     if (focusedValue.name === 'feed') {
-      const choices = await client.db.Guilds.findOne({
+      const guild = await client.db.Guilds.findOne({
         _id: interaction.guild.id,
-      }).rssfeeds;
-      const filtered = choices.filter(choice =>
-        choice._id.toLowerCase().includes(focusedValue.value.toLowerCase()),
-      );
-      await interaction.respond(
-        filtered.map(choice => ({ name: choice._id, value: choice._id })),
-      );
+      });
+
+      if (guild && guild.rssfeeds) {
+        const filtered = guild.rssfeeds.filter(choice =>
+          choice._id.toLowerCase().includes(focusedValue.value.toLowerCase()),
+        );
+        await interaction.respond(
+          filtered.map(choice => ({ name: choice._id, value: choice._id })),
+        );
+      } else {
+        await interaction.respond({
+          name: 'Não há nada listado.',
+          value: 'Não há nada listado.',
+        });
+      }
     }
   },
   async execute(interaction, client) {
