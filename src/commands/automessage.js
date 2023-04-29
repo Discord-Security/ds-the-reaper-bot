@@ -90,8 +90,11 @@ module.exports = {
           content: 'Sucesso!',
           ephemeral: true,
         });
-        setInterval(() => {
-          if (doc.automessage.find(c => c._id === mensagem))
+        setInterval(async () => {
+          const doc2 = await client.db.Guilds.findOne({
+            _id: interaction.guild.id,
+          });
+          if (doc2.automessage.find(c => c._id === mensagem))
             channel.send(mensagem);
         }, ms(tempo));
         break;
