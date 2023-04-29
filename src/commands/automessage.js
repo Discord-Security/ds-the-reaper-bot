@@ -60,15 +60,21 @@ module.exports = {
     ),
   async autocomplete(interaction, client) {
     const focusedValue = interaction.options.getFocused();
-    const choices = await client.db.Guilds.findOne({
-      _id: interaction.guild.id,
-    }).automessage;
-    const filtered = choices.filter(choice =>
-      choice._id.toLowerCase().includes(focusedValue.toLowerCase()),
-    );
-    await interaction.respond(
-      filtered.map(choice => ({ name: choice._id, value: choice._id })),
-    );
+    const guild = await client.db.Guilds.findOne({ _id: interaction.guild.id });
+
+    if (guild && guild.automessage) {
+      const filtered = guild.automessage.filter(choice =>
+        choice._id.toLowerCase().includes(focusedValue.toLowerCase()),
+      );
+      await interaction.respond(
+        filtered.map(choice => ({ name: choice._id, value: choice._id })),
+      );
+    } else {
+      await interaction.respond({
+        name: 'Não há nada listado.',
+        value: 'Não há nada listado.',
+      });
+    }
   },
   async execute(interaction, client) {
     const subcommand = interaction.options._subcommand;
