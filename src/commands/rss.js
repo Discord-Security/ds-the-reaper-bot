@@ -132,7 +132,7 @@ module.exports = {
       case 'criar': {
         const url = interaction.options.getString('url');
         const canal = interaction.options.getChannel('canal');
-        doc.rssfeeds.push({ _id: url, canal: canal.id });
+        doc.rssfeeds.push({ _id: url, canal: canal.id, disabled: false });
         doc.save();
         interaction.reply({ content: 'Feito com sucesso.' });
         break;
