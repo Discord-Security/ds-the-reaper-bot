@@ -83,8 +83,6 @@ module.exports = async client => {
         if (doc.automessage.find(c => c._id === autoMsg._id))
           client.channels.cache.get(autoMsg.channel).send(autoMsg._id);
       }, autoMsg.interval);
-  }).catch(() => {
-    return 0;
   });
 
   const lockdownsForComplete = await client.db.Guilds.find({
