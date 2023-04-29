@@ -72,6 +72,7 @@ module.exports = async client => {
   }
 
   setInterval(RSS, 60000);
+  RSS();
 
   async function RSS() {
     const guildsWithRssFeeds = await client.db.Guilds.find({
@@ -82,6 +83,7 @@ module.exports = async client => {
       guildsWithRssFeeds.map(async guild => {
         guild.rssfeeds.map(async rssFeed => {
           const data = await client.request.parseURL(rssFeed._id);
+          console.log(data);
           const message = JSON.parse(
             rssFeed.message
               .replace('%title', data.items[0].title)
