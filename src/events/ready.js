@@ -71,48 +71,95 @@ module.exports = async client => {
     });
   }
 
-  const AutoMsg = await client.db.Guilds.find({
+  setInterval(RSS(), 60000);
+
+  async function RSS() {
+    const guildsWithRssFeeds = await client.db.Guilds.find({
+      rssfeeds: { $exists: true },
+    });
+
+    if (guildsWithRssFeeds.length > 0) {
+      guildsWithRssFeeds.map(async guild => {
+        guild.rssfeeds.map(async rssFeed => {
+          const data = await client.request.parseURL(rssFeed._id);
+          const message = JSON.parse(
+            rssFeed.message
+              .replace('%title', data.items[0].link)
+              .replace('%url', data.items[0].link),
+          );
+          client.channels.cache
+            .get(rssFeed.channel)
+            .send(message)
+            .then(() => {
+              client.db.Guilds.findOneAndUpdate(
+                {
+                  '_id': guild._id,
+                  'rssfeeds._id': rssFeed._id,
+                },
+                {
+                  $set: { 'rssfeeds.$.lastItem': data.items[0].link },
+                },
+                { new: true },
+              );
+            });
+        });
+      });
+    }
+  }
+
+  const guildsWithAutoMessage = await client.db.Guilds.find({
     automessage: { $exists: true },
   });
 
-  AutoMsg.map(async autoMsg => {
-    const doc = await client.db.Guilds.findOne({ _id: autoMsg._id });
-    autoMsg = autoMsg.automessage;
-    if (autoMsg.length > 0)
-      setInterval(() => {
-        if (doc.automessage.find(c => c._id === autoMsg._id))
-          client.channels.cache.get(autoMsg.channel).send(autoMsg._id);
-      }, autoMsg.interval);
+  guildsWithAutoMessage.map(async currentGuild => {
+    const guild = await client.db.Guilds.findOne({ _id: currentGuild._id });
+    const autoMessages = currentGuild.automessage;
+    if (autoMessages.length > 0) {
+      autoMessages.forEach(currentAutoMsg => {
+        setInterval(() => {
+          if (guild.automessage.find(c => c._id === currentAutoMsg._id))
+            client.channels.cache
+              .get(currentAutoMsg.channel)
+              .send(currentAutoMsg._id);
+        }, currentAutoMsg.interval);
+      });
+    }
   });
 
-  const lockdownsForComplete = await client.db.Guilds.find({
+  const guildsWithLockdown = await client.db.Guilds.find({
     lockdownTime: { $exists: true },
   });
-  if (lockdownsForComplete.length > 1) {
-    lockdownsForComplete.map(document => {
-      return schedule.scheduleJob(document.lockdownTime, async function () {
+
+  if (guildsWithLockdown.length > 0) {
+    for (const guild of guildsWithLockdown) {
+      schedule.scheduleJob(guild.lockdownTime, async function () {
         await client.db.Guilds.updateOne(
-          { _id: document._id },
+          { _id: guild._id },
           { $unset: { lockdownTime: 1 } },
         );
-        const guild = await client.db.Guilds.findOne({
-          _id: document._id,
+
+        const updatedGuild = await client.db.Guilds.findOne({
+          _id: guild._id,
         });
+
         const channels = client.guilds.cache
-          .get(document._id)
+          .get(guild._id)
           .channels.cache.filter(
             channel => channel.type === discord.ChannelType.GuildText,
           )
-          .filter(
-            channel =>
-              channel
-                .permissionsFor(document._id)
-                .has(discord.PermissionFlagsBits.ViewChannel) === true,
+          .filter(channel =>
+            channel
+              .permissionsFor(guild._id)
+              .has(discord.PermissionFlagsBits.ViewChannel),
           );
-        channels.map(channel => {
-          if (!guild.channelsLockdown.includes(channel.id)) return 0;
-          guild.channelsLockdown.pull(channel.id);
-          return channel.permissionOverwrites.set(
+
+        for (const channel of channels) {
+          if (!updatedGuild.channelsLockdown.includes(channel.id)) {
+            continue;
+          }
+
+          updatedGuild.channelsLockdown.pull(channel.id);
+          channel.permissionOverwrites.set(
             [
               {
                 id: document._id,
@@ -121,9 +168,10 @@ module.exports = async client => {
             ],
             'Modo Lockdown desativado',
           );
-        });
-        guild.save();
+        }
+
+        updatedGuild.save();
       });
-    });
+    }
   }
 };
