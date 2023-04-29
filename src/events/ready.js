@@ -83,6 +83,7 @@ module.exports = async client => {
       guildsWithRssFeeds.map(async guild => {
         guild.rssfeeds.map(async rssFeed => {
           const data = await client.request.parseURL(rssFeed._id);
+          if (rssFeed.lastItem === data.items[0].link) return 0;
           const message = JSON.parse(
             rssFeed.message
               .replace('%title', data.items[0].title)
