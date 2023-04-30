@@ -88,7 +88,9 @@ module.exports = async client => {
             rssFeed.message
               .replace('%title', data.items[0].title)
               .replace('%url', data.items[0].link),
-          );
+          ).catch((err) => {
+            return new Error(`Falhou o JSON Parse de ${guild._id} - ${rssFeed._id} com: \n` + err)
+          });
           client.channels.cache
             .get(rssFeed.channel)
             .send(message)
