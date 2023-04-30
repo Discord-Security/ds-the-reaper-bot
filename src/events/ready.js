@@ -84,28 +84,36 @@ module.exports = async client => {
         guild.rssfeeds.map(async rssFeed => {
           const data = await client.request.parseURL(rssFeed._id);
           if (rssFeed.lastItem === data.items[0].link) return 0;
-          const message = JSON.parse(
-            rssFeed.message
-              .replace('%title', data.items[0].title)
-              .replace('%url', data.items[0].link),
-          ).catch((err) => {
-            return new Error(`Falhou o JSON Parse de ${guild._id} - ${rssFeed._id} com: \n` + err)
-          });
-          client.channels.cache
-            .get(rssFeed.channel)
-            .send(message)
-            .then(async () => {
-              await client.db.Guilds.findOneAndUpdate(
-                {
-                  '_id': guild._id,
-                  'rssfeeds._id': rssFeed._id,
-                },
-                {
-                  $set: { 'rssfeeds.$.lastItem': data.items[0].link },
-                },
-                { new: true },
-              );
-            });
+          let message;
+          try {
+            message = JSON.parse(
+              rssFeed.message
+                .replace('%title', data.items[0].title)
+                .replace('%url', data.items[0].link),
+            );
+          } catch (err) {
+            return new Error(
+              `Falhou o JSON Parse de ${guild._id} - ${rssFeed._id} com: \n` +
+                err,
+            );
+          }
+
+          if (message)
+            client.channels.cache
+              .get(rssFeed.channel)
+              .send(message)
+              .then(async () => {
+                await client.db.Guilds.findOneAndUpdate(
+                  {
+                    '_id': guild._id,
+                    'rssfeeds._id': rssFeed._id,
+                  },
+                  {
+                    $set: { 'rssfeeds.$.lastItem': data.items[0].link },
+                  },
+                  { new: true },
+                );
+              });
         });
       });
     }
