@@ -11,11 +11,12 @@ await connect(process.env.db, {})
       )}`,
     ),
   )
-  .catch(() =>
+  .catch(err =>
     console.log(
       `${ChalkAdvanced.gray('>')} ${ChalkAdvanced.red(
         '❎ • Conexão do banco de dados falhada',
       )}`,
+      err,
     ),
   );
 
