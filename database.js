@@ -3,7 +3,7 @@ const { ChalkAdvanced } = require('chalk-advanced');
 const paginate = require('mongoose-paginate-v2');
 set('strictQuery', true);
 
-connect(process.env.db, {})
+await connect(process.env.db, {})
   .then(() =>
     console.log(
       `${ChalkAdvanced.gray('>')} ${ChalkAdvanced.green(
