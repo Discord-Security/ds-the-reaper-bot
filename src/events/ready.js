@@ -80,7 +80,7 @@ module.exports = async client => {
     });
 
     if (guildsWithRssFeeds.length > 0) {
-      guildsWithRssFeeds.map(async guild => {
+      await guildsWithRssFeeds.map(async guild => {
         guild.rssfeeds.map(async rssFeed => {
           const data = await client.request.parseURL(rssFeed._id);
           if (rssFeed.lastItem === data.items[0].link) return 0;
@@ -113,6 +113,9 @@ module.exports = async client => {
                   },
                   { new: true },
                 );
+              })
+              .catch(() => {
+                return 0;
               });
         });
       });
