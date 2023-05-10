@@ -99,23 +99,28 @@ module.exports = async client => {
           }
 
           if (message)
-            client.channels.cache
-              .get(rssFeed.channel)
-              .send(message)
-              .then(async () => {
-                await client.db.Guilds.findOneAndUpdate(
-                  {
-                    '_id': guild._id,
-                    'rssfeeds._id': rssFeed._id,
-                  },
-                  {
-                    $set: { 'rssfeeds.$.lastItem': data.items[0].link },
-                  },
-                  { new: true },
-                );
+            Promise.resolve(client.channels.fetch(rssFeed.channel))
+              .then(channel => {
+                channel
+                  .send(message)
+                  .then(async () => {
+                    await client.db.Guilds.findOneAndUpdate(
+                      {
+                        '_id': guild._id,
+                        'rssfeeds._id': rssFeed._id,
+                      },
+                      {
+                        $set: { 'rssfeeds.$.lastItem': data.items[0].link },
+                      },
+                      { new: true },
+                    );
+                  })
+                  .catch(err => {
+                    if (err) return 0;
+                  });
               })
-              .catch(() => {
-                return 0;
+              .catch(err => {
+                if (err) return 0;
               });
         });
       });
