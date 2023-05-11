@@ -85,8 +85,11 @@ module.exports = async client => {
           const data = await client.request.parseURL(rssFeed._id).catch(err => {
             if (err) return 0;
           });
-          if (rssFeed.lastItem === data.items[0].link) return 0;
-          if (rssFeed.penultimateItem === data.items[0].link) return 0;
+          if (
+            rssFeed.lastItem === data.items[0].link ||
+            rssFeed.penultimateItem === data.items[0].link
+          )
+            return 0;
           let message;
           try {
             message = JSON.parse(
