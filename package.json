@@ -16,20 +16,15 @@
     "discord-backup": "^3.3.2",
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "fs": "^0.0.1-security",
     "img-url-to-imgur": "^1.0.0",
-    "moment": "^2.29.4",
-    "mongoose": "^7.1.0",
+    "mongoose": "^7.1.1",
     "mongoose-paginate-v2": "^1.7.1",
     "ms-pt-br": "^2.1.4",
     "node-schedule": "^2.1.0",
-    "nodemon": "2.0.22",
     "rss-parser": "^3.13.0",
     "superagent": "^8.0.3",
     "ts-node": "^10.8.1",
-    "typescript": "^5.0.4",
-    "undici": "^5.21.2"
+    "typescript": "^5.0.4"
   },
   "devDependencies": {
     "eslint": "^8.40.0",
