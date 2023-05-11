@@ -82,8 +82,11 @@ module.exports = async client => {
     if (guildsWithRssFeeds.length > 0) {
       await guildsWithRssFeeds.map(async guild => {
         guild.rssfeeds.map(async rssFeed => {
-          const data = await client.request.parseURL(rssFeed._id);
+          const data = await client.request.parseURL(rssFeed._id).catch(err => {
+            if (err) return 0;
+          });
           if (rssFeed.lastItem === data.items[0].link) return 0;
+          if (rssFeed.penultimateItem === data.items[0].link) return 0;
           let message;
           try {
             message = JSON.parse(
@@ -110,7 +113,10 @@ module.exports = async client => {
                         'rssfeeds._id': rssFeed._id,
                       },
                       {
-                        $set: { 'rssfeeds.$.lastItem': data.items[0].link },
+                        $set: {
+                          'rssfeeds.$.penultimateItem': rssFeed.lastItem,
+                          'rssfeeds.$.lastItem': data.items[0].link,
+                        },
                       },
                       { new: true },
                     );
