@@ -104,6 +104,7 @@ const guildSchema = new Schema({
       },
       disabled: Boolean,
       lastItem: String,
+      penultimateItem: String,
     },
   ],
 });
