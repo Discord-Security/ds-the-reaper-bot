@@ -62,7 +62,7 @@ module.exports = {
     const senha = interaction.options.getString('senha');
     const motivo =
       interaction.options.getString('motivo') ?? 'Sem motivo informado.';
-    if (senha !== process.env.senha)
+    if (senha !== process.env.SENHA)
       return interaction.reply({ content: 'A senha está errada.' });
     const reason = `Banido com The Reaper, por ${interaction.member.user.tag} foi definido como gravidade ${gravidade} - ${motivo}`;
     await interaction.deferReply({ ephemeral: true });

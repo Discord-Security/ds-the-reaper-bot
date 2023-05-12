@@ -1,6 +1,6 @@
 const discord = require('discord.js');
 const ImgurUpload = require('img-url-to-imgur');
-const uploader = new ImgurUpload(process.env.imgur);
+const uploader = new ImgurUpload(process.env.IMGUR);
 
 module.exports = {
   data: new discord.SlashCommandBuilder()
