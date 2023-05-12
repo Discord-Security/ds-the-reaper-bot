@@ -86,8 +86,8 @@ module.exports = async client => {
             if (err) return 0;
           });
           if (
-            rssFeed.lastItem === data.items[0].link ||
-            rssFeed.penultimateItem === data.items[0].link
+            (data.items && rssFeed.lastItem === data.items[0].link) ||
+            (data.items && rssFeed.penultimateItem === data.items[0].link)
           )
             return 0;
           let message;
