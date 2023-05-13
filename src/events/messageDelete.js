@@ -11,27 +11,28 @@ module.exports = async (client, message) => {
     doc.logs.deletedMessage !== undefined &&
     doc.logs.deletedMessage !== null
   ) {
+    const fields = [
+      { name: 'Canal:', value: message.channel.toString() },
+    ];
+
+    if (message.content) {
+      fields.unshift({
+        name: 'Conteúdo da Mensagem:',
+        value: `\`\`\`ansi\n[2;31m${message.content.substr(0, 1024)}[0m[2;31m[0m\n\`\`\``,
+        inline: false,
+      });
+    }
+
+    if (message.attachments.size >= 1) {
+      fields.push({
+        name: 'Arquivos:',
+        value: `${message.attachments.map(a => a.url)}`,
+      });
+    }
     const embed = new discord.EmbedBuilder()
       .setDescription(`***${message.author.tag}* | Mensagem __Deletada__**`)
       .setColor(client.cor)
-      .addFields(
-        {
-          name: 'Conteúdo da Mensagem:',
-          value: message.content.substr(0, 1024)
-            ? message.content.substr(0, 1024)
-            : 'Nada',
-        },
-        { name: 'Canal:', value: `<#${message.channel.id}>` },
-        message.attachments.size >= 1
-          ? {
-              name: 'Arquivos:',
-              value: `${message.attachments.map(a => a.url)}`,
-            }
-          : {
-              name: 'Arquivos:',
-              value: 'Sem arquivos encontrados nesta mensagem.',
-            },
-      )
+      .addFields(fields)
       .setImage('https://i.imgur.com/Youft1w.png')
       .setFooter({ text: 'ID do Usuário: ' + message.author.id });
 
