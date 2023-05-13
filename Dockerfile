@@ -9,6 +9,6 @@ COPY package.json .
 RUN npm install
 
 COPY ./src ./src
-COPY database.js index.js ./
+COPY database.js index.js reasons.json ./
 
 CMD ["dumb-init", "node", "index.js"]
