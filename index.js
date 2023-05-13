@@ -26,8 +26,6 @@ client.canais = {
 };
 client.request = new (require('rss-parser'))();
 
-console.log("Estou updatado! - V2")
-
 /**
  * Tenta enviar uma mensagem para um canal específico.
  * @param {string} channelID - O ID do canal.
