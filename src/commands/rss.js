@@ -146,7 +146,155 @@ module.exports = {
         break;
       }
       case 'editar': {
-        interaction.reply('Em breve...');
+        const rssFeed = doc.rssfeeds.id(feed);
+        if (!rssFeed)
+          return interaction.reply({ content: 'Nada foi encontrado.' });
+        const emb = new discord.EmbedBuilder()
+          .setColor(client.cor)
+          .setTitle((!rssFeed.disabled ? '🟢' : '🔴') + ' Alterar RSS')
+          .addFields([
+            {
+              name: '<:Discord_Star:1038602481640407050> Link RSS',
+              value: rssFeed._id,
+              inline: true,
+            },
+            {
+              name: '<:Discord_Channel:1035624104264470648> Canal',
+              value: `<#${rssFeed.channel}>`,
+            },
+            {
+              name: '<:Discord_Chat:1035624171960541244> Mensagem',
+              value: `\`${rssFeed.message}\``,
+            },
+          ]);
+        const row = new discord.ActionRowBuilder().setComponents(
+          new discord.ButtonBuilder()
+            .setCustomId('link')
+            .setLabel('Mudar link')
+            .setStyle(discord.ButtonStyle.Secondary),
+          new discord.ButtonBuilder()
+            .setCustomId('mensagem')
+            .setLabel('Alterar mensagem')
+            .setStyle(discord.ButtonStyle.Secondary),
+          new discord.ButtonBuilder()
+            .setCustomId('canal')
+            .setLabel('Mudar canal')
+            .setStyle(discord.ButtonStyle.Secondary),
+        );
+        const row2 = new discord.ActionRowBuilder().setComponents(
+          new discord.ButtonBuilder()
+            .setCustomId('estado')
+            .setLabel(rssFeed.disabled ? 'Ativar' : 'Desativar')
+            .setStyle(
+              rssFeed.disabled
+                ? discord.ButtonStyle.Success
+                : discord.ButtonStyle.Danger,
+            ),
+        );
+        interaction
+          .reply({ embeds: [emb], components: [row, row2] })
+          .then(msg => {
+            const collector = msg.createMessageComponentCollector({
+              componentType: discord.ComponentType.Button,
+              time: 300000,
+            });
+            collector.on('collect', i => {
+              if (i.user.id === interaction.user.id) {
+                switch (i.customId) {
+                  case 'estado': {
+                    i.reply(
+                      `${
+                        !rssFeed.disabled ? 'Desativado' : 'Ativado'
+                      } com sucesso`,
+                    );
+                    rssFeed.disabled = !rssFeed.disabled;
+                    doc.save();
+                    break;
+                  }
+                  case 'link': {
+                    i.reply({ content: 'Envie o novo link RSS.' });
+                    const collector =
+                      interaction.channel.createMessageCollector({
+                        filter: m => m.author.id === interaction.author.id,
+                        time: 300000,
+                        max: 1,
+                      });
+
+                    collector.on('collect', m => {
+                      if (
+                        !m.content.startsWith('http://') ||
+                        !m.content.startsWith('https://')
+                      )
+                        return m.reply('Link inválido.');
+                      rssFeed._id = m.content;
+                      doc.save();
+                      m.reply('Definido com sucesso.');
+                    });
+                    break;
+                  }
+                  case 'canal': {
+                    i.reply({ content: 'Envie uma menção de um canal.' });
+                    const collector =
+                      interaction.channel.createMessageCollector({
+                        filter: m => m.author.id === interaction.author.id,
+                        time: 300000,
+                        max: 1,
+                      });
+
+                    collector.on('collect', m => {
+                      const channelId = m.content.match(/\d+/)[0];
+                      if (!channelId)
+                        return m.reply({
+                          content: 'Envie uma menção de um canal válido.',
+                        });
+                      rssFeed.channel = channelId;
+                      doc.save();
+                    });
+                    break;
+                  }
+                  case 'mensagem': {
+                    i.reply({
+                      content:
+                        'Você selecionou a opção de Mensagem. Para isso você poderá personalizar toda a sua mensagem neste site: https://glitchii.github.io/embedbuilder/ , tendo em conta as variáveis do RSS disponíveis em nossa documentação. Você tem 5 minutos para enviar a mensagem personalizada para este feed ou diga `cancelar` para ser anulada a nova mensagem.',
+                    });
+                    const filter = m => interaction.user.id === m.author.id;
+                    const collector =
+                      interaction.channel.createMessageCollector({
+                        filter,
+                        time: 300000,
+                        max: 1,
+                      });
+
+                    collector.on('collect', async m => {
+                      if (m.content === 'cancelar') return 0;
+                      try {
+                        const pe = JSON.parse(m.content);
+                        interaction.channel.send(pe).catch(err => {
+                          if (err)
+                            return interaction.channel.send(
+                              'A Mensagem que você enviou está com erros para ser testada, mas não se preocupe a verificação principal foi certificada!',
+                            );
+                        });
+                        rssFeed.message = m.content;
+                        doc.save();
+                      } catch (err) {
+                        return interaction.channel.send(
+                          'Seu JSON é inválido para minha inteligência, veja se você copiou tudo certo!',
+                        );
+                      }
+                    });
+                    break;
+                  }
+                }
+              } else {
+                i.reply({
+                  content: `Este botão não é para você usar!`,
+                  ephemeral: true,
+                });
+              }
+            });
+          });
+
         break;
       }
       case 'apagar': {

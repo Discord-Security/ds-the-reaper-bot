@@ -6,12 +6,12 @@ module.exports = async (client, interaction) => {
       return require('../button/reject')(client, interaction);
     if (interaction.customId.startsWith('Registrar'))
       return require('../button/registrar')(client, interaction);
-    else if (
-      interaction.customId !== 'info' &&
-      interaction.customId !== 'guilds' &&
-      interaction.customId !== 'roles'
-    )
-      require('../button/' + interaction.customId)(client, interaction);
+    else
+      require('../button/' + interaction.customId)(client, interaction).catch(
+        err => {
+          if (err) return 0;
+        },
+      );
   }
   if (interaction.isStringSelectMenu()) {
     require('../menu/' + interaction.values[0])(client, interaction);

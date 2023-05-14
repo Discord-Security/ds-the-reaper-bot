@@ -95,7 +95,10 @@ module.exports = async client => {
             message = JSON.parse(
               rssFeed.message
                 .replace('%title', data.items[0].title)
-                .replace('%url', data.items[0].link),
+                .replace('%url', data.items[0].link)
+                .replace('%creator', data.items[0].creator)
+                .replace('%guid', data.items[0].guid)
+                .replace('%date', Date.now(data.items[0].pubDate)),
             );
           } catch (err) {
             return new Error(
