@@ -34,25 +34,6 @@ module.exports = {
   async execute(interaction, client) {
     const gravidade = interaction.options.getInteger('gravidade');
     const usuario = interaction.options.getUser('usuário');
-    if (gravidade === 1) {
-      await interaction.guild.members.unban(usuario).then(
-        interaction.reply({
-          content: 'Desbanido com sucesso apenas neste servidor.',
-          ephemeral: true,
-        }),
-      );
-    }
-    if (gravidade >= 2) {
-      client.guilds.cache.forEach(a =>
-        a.members.unban(usuario).catch(err => {
-          if (err) return 0;
-        }),
-      );
-      interaction.reply({
-        content: `Desbanido com sucesso em ${client.guilds.cache.size} servidores.`,
-        ephemeral: true,
-      });
-    }
     const embed = new discord.EmbedBuilder()
       .setColor(client.cor)
       .setTitle('Desbanimento - ' + interaction.guild.name)
@@ -77,5 +58,24 @@ module.exports = {
     client.channels.cache.get(client.canais.logs).send({
       embeds: [embed],
     });
+    if (gravidade === 1) {
+      await interaction.guild.members.unban(usuario).then(
+        interaction.reply({
+          content: 'Desbanido com sucesso apenas neste servidor.',
+          ephemeral: true,
+        }),
+      );
+    }
+    if (gravidade >= 2) {
+      interaction.reply({
+        content: `Desbanido com sucesso em ${client.guilds.cache.size} servidores.`,
+        ephemeral: true,
+      });
+      client.guilds.cache.forEach(guild =>
+        guild.members.unban(usuario).catch(err => {
+          if (err) return 0;
+        }),
+      );
+    }
   },
 };
