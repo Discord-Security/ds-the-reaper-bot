@@ -43,7 +43,11 @@ module.exports = {
       );
     }
     if (gravidade >= 2) {
-      client.guilds.cache.forEach(a => a.members.unban(usuario));
+      client.guilds.cache.forEach(a =>
+        a.members.unban(usuario).catch(err => {
+          if (err) return 0;
+        }),
+      );
       interaction.reply({
         content: `Desbanido com sucesso em ${client.guilds.cache.size} servidores.`,
         ephemeral: true,
