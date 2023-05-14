@@ -150,7 +150,7 @@ module.exports = {
         break;
       }
       case 'apagar': {
-        doc.automessage.pull({
+        doc.rssfeeds.pull({
           _id: feed,
         });
         doc.save();
