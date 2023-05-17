@@ -82,9 +82,9 @@ module.exports = async client => {
     if (guildsWithRssFeeds.length > 0) {
       await guildsWithRssFeeds.map(async guild => {
         guild.rssfeeds.map(async rssFeed => {
-          const data = await client.request.parseURL(rssFeed._id)/*.catch(err => {
+          const data = await client.request.parseURL(rssFeed._id)/* .catch(err => {
             if (err) return 0;
-          });*/
+          }); */
           if (
             (data.items && rssFeed.lastItem === data.items[0].link) ||
             (data.items && rssFeed.penultimateItem === data.items[0].link)
