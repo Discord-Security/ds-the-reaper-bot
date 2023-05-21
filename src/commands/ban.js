@@ -53,9 +53,10 @@ module.exports = {
     const usuario = interaction.options.getUser('usuário');
     const motivo =
       interaction.options.getString('motivo') ?? 'Sem motivo informado.';
-    if (usuario.bot && usuario.id === interaction.member.user.id) {
-      return interaction.reply({ content: 'Não se pode banir bots oficiais ou a si mesmo.' });
-    }
+    if (usuario.bot || usuario.id === interaction.member.user.id)
+      return interaction.reply({
+        content: 'Não se pode banir bots oficiais ou a si mesmo.',
+      });
     const reason = `Banido com The Reaper, por ${interaction.member.user.tag} foi definido como gravidade ${gravidade} - ${motivo}`;
     if (gravidade === 1) {
       interaction.guild.bans

@@ -63,12 +63,10 @@ module.exports = {
           'O tempo que foi dado não é válido. Você deve usar d para dias, h para horas e m para minutos.',
       });
     }
-    if (!member) {
+    if (!member || member.bot || member.id === interaction.member.user.id)
       return interaction.reply({
-        content:
-          'O membro que foi dado não é válido, você deve mencionar alguém dentro do servidor.',
+        content: 'Não se pode banir bots oficiais ou a si mesmo.',
       });
-    }
     await member.timeout(time, reason).catch(error => {
       if (error)
         return interaction.reply({
