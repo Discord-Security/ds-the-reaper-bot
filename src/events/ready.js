@@ -82,7 +82,9 @@ module.exports = async client => {
     if (guildsWithRssFeeds.length > 0) {
       await guildsWithRssFeeds.map(async guild => {
         guild.rssfeeds.map(async rssFeed => {
-          const data = await client.request.parseURL(rssFeed._id)/* .catch(err => {
+          const data = await client.request.parseURL(
+            rssFeed._id,
+          ); /* .catch(err => {
             if (err) return 0;
           }); */
           if (
@@ -94,7 +96,7 @@ module.exports = async client => {
           try {
             message = JSON.parse(
               rssFeed.message
-                .replace('%title', data.items[0].title)
+                .replace('%title', data.items[0].title.replace('&quot;', '"'))
                 .replace('%url', data.items[0].link)
                 .replace('%creator', data.items[0].creator)
                 .replace('%guid', data.items[0].guid)
