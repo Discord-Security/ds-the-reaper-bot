@@ -103,8 +103,8 @@ const guildSchema = new Schema({
         default: '{ "content": "**%title**\\n%url" }',
       },
       disabled: Boolean,
-      lastItem: String,
-      penultimateItem: String,
+      lastItem: { type: String, default: '' },
+      penultimateItem: { type: String, default: '' },
     },
   ],
 });

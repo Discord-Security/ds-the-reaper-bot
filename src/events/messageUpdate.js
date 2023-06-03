@@ -36,38 +36,38 @@ module.exports = async (client, oldmessage, message) => {
         return `\u001b[0m${part.value}`;
       })
       .join('');
-    if (oldContentDiff.length > 1024 && newContentDiff.length > 1024) {
-      if (oldContentDiff.slice(0, 1024) === newContentDiff.slice(0, 1024)) {
+    if (oldContentDiff.length > 512 && newContentDiff.length > 512) {
+      if (oldContentDiff.slice(0, 512) === newContentDiff.slice(0, 512)) {
         oldContentDiff = `[...]\`\`\`ansi\n${oldContentDiff.slice(
-          -1024,
+          -512,
         )}\n\`\`\``;
         newContentDiff = `[...]\`\`\`ansi\n${newContentDiff.slice(
-          -1024,
+          -512,
         )}\n\`\`\``;
       } else {
         oldContentDiff = `\`\`\`ansi\n${oldContentDiff.slice(
           0,
-          1024,
+          512,
         )}\n\`\`\`[...]\n`;
         newContentDiff = `\`\`\`ansi\n${newContentDiff.slice(
           0,
-          1024,
+          512,
         )}\n\`\`\`[...]\n`;
       }
     } else {
-      if (oldContentDiff.length > 1024) {
+      if (oldContentDiff.length > 512) {
         oldContentDiff = `\`\`\`ansi\n${oldContentDiff.slice(
           0,
-          1024,
+          512,
         )}\n\`\`\`[...]\n`;
       } else {
         oldContentDiff =
           oldContentDiff && `\`\`\`ansi\n${oldContentDiff}\n\`\`\``;
       }
-      if (newContentDiff.length > 1024) {
+      if (newContentDiff.length > 512) {
         newContentDiff = `\`\`\`ansi\n${newContentDiff.slice(
           0,
-          1024,
+          512,
         )}\n\`\`\`[...]\n`;
       } else {
         newContentDiff =
