@@ -54,7 +54,7 @@ module.exports = {
     const member = interaction.options.getMember('usuário');
     const reason =
       interaction.options.getString('motivo') ??
-      'Sem motivo definido.' + ' - Punido por: ' + interaction.member.user.tag;
+      'Sem motivo definido. - Punido por: ' + interaction.member.user.tag;
     const time = ms(interaction.options.getString('tempo'));
 
     if (!time) {
