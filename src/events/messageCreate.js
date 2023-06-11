@@ -7,7 +7,9 @@ module.exports = async (client, message) => {
 
   if (doc) {
     if (doc.channelsAutopublish.includes(message.channel.id)) {
-      message.crosspost();
+      message.crosspost().catch(err => {
+        if (err) return 0;
+      });
     }
 
     if (message.author.bot) return;
