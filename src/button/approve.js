@@ -4,7 +4,7 @@ module.exports = async (client, interaction) => {
   const id = interaction.customId.replace('approve-', '');
 
   interaction.reply({
-    content: `Prontinho, Servidor ${id} aprovado com sucesso!`,
+    content: `Prontinho, Servidor ${id} aprovado com sucesso por ${interaction.member}!`,
   });
   
   client.channels.cache.get('1025774984037146686').send({
