@@ -23,8 +23,9 @@ module.exports = {
       interaction.options.getString('id_server') || interaction.guild.id,
     );
 
-      if (!guild) return interaction.reply({ content: "Servidor não encontrado."})
-      
+    if (!guild)
+      return interaction.reply({ content: 'Servidor não encontrado.' });
+
     const serverInfoEmbed = new discord.EmbedBuilder()
       .setColor(client.cor)
       .setTitle(guild.name)
