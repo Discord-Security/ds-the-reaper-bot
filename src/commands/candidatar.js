@@ -82,18 +82,23 @@ module.exports = {
             'Sua candidatação foi enviada com sucesso e está em análise.',
           ephemeral: true,
         });
+
         const motivo = i.fields.getTextInputValue('MotivoInput');
         const idade = i.fields.getTextInputValue('IdadeInput');
         const id = i.fields.getTextInputValue('IDInput');
         const funcao = i.fields.getTextInputValue('FunçãoInput');
+
         const member = interaction.member;
+
         const approve = new discord.ButtonBuilder()
           .setCustomId(`Registrar ${member.id} ${id}`)
           .setLabel('Registrar')
           .setStyle(2)
           .setEmoji('1026116735759302727');
         const row = new discord.ActionRowBuilder().setComponents(approve);
+
         const server = client.guilds.cache.get(id);
+
         const embed = new discord.EmbedBuilder()
           .setTitle(member.user.tag)
           .addFields([
@@ -114,6 +119,12 @@ module.exports = {
         client.channels.cache
           .get('1055621062836105236')
           .send({ embeds: [embed], components: [row] });
+
+        if (!server || !server.name) {
+          interaction.channel.send({
+            content: `${interaction.member}, detectei que não estou dentro do servidor que você mencionou, recomendo você me colocar no seu servidor para adiantar mais rápido o processo da sua aprovação.`,
+          });
+        }
       }
     } else {
       const guild = await client.db.Guilds.findOne({
@@ -170,28 +181,36 @@ module.exports = {
             'Sua candidatação foi enviada com sucesso e está em análise.',
           ephemeral: true,
         });
+
         const invite = await interaction.channel.createInvite({
           maxAge: 0,
           maxUses: 0,
         });
+
         const motivo = i.fields.getTextInputValue('MotivoInput');
         const idade = i.fields.getTextInputValue('IdadeInput');
+
         const guild = interaction.guild;
+
         const member = interaction.member;
+
         const approve = new discord.ButtonBuilder()
           .setCustomId('approve-' + guild.id)
           .setLabel('Aprovar')
           .setStyle(2)
           .setEmoji('1026116735759302727');
+        
         const reject = new discord.ButtonBuilder()
           .setCustomId('reject-' + guild.id)
           .setLabel('Rejeitar')
           .setStyle(2)
           .setEmoji('1026116707770712136');
+        
         const row = new discord.ActionRowBuilder().setComponents(
           approve,
           reject,
         );
+        
         const embed = new discord.EmbedBuilder()
           .setTitle(guild.name)
           .addFields([
