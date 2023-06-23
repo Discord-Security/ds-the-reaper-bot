@@ -2,17 +2,28 @@ const discord = require('discord.js');
 
 module.exports = async (client, interaction) => {
   const id = interaction.customId.replace('approve-', '');
+
   interaction.reply({
     content: `Prontinho, Servidor ${id} aprovado com sucesso!`,
   });
+  
+  client.channels.cache.get('1025774984037146686').send({
+    content: `<:Discord_Join:1041100297629597836> O servidor ${
+      client.guilds.cache.get(id).name
+    } foi aprovado na nossa rede. Boas-vindas e espero que gostem da nossa rede!`,
+  });
+
   const guild = await client.db.Guilds.findOne({ _id: id });
+
   if (guild) {
     guild.approved = true;
     guild.save();
   } else {
     new client.db.Guilds({ _id: id, approved: true }).save();
   }
+
   const guilds = await client.db.Guilds.find({ approved: true });
+
   const emb = new discord.EmbedBuilder()
     .setColor(client.cor)
     .setTitle('Servidores no The Reaper!')
@@ -60,6 +71,7 @@ module.exports = async (client, interaction) => {
           })
           .join(''),
     );
+
   client.channels.cache
     .get('1040362329868607629')
     .messages.fetch({ limit: 1 })
