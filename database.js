@@ -107,6 +107,16 @@ const guildSchema = new Schema({
       penultimateItem: { type: String, default: '' },
     },
   ],
+  vips: {
+    roles: Array,
+    registeredVips: [
+      {
+        _id: String,
+        expires: Date,
+        roleId: String,
+      },
+    ],
+  },
 });
 
 const partnerSchema = new Schema({
