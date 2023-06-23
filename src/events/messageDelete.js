@@ -18,7 +18,7 @@ module.exports = async (client, message) => {
     if (message.content) {
       fields.unshift({
         name: 'Conteúdo da Mensagem:',
-        value: `\`\`\`ansi\n[2;31m${message.content.substr(0, 1024)}[0m[2;31m[0m\n\`\`\``,
+        value: `\`\`\`ansi\n[2;31m${message.content.substr(0, 800)}[0m[2;31m[0m\n\`\`\``,
         inline: false,
       });
     }
