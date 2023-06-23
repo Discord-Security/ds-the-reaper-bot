@@ -58,7 +58,7 @@ process.on('unhandledRejection', async error => {
   const lista = await new discord.AttachmentBuilder(
     Buffer.from(error.toString()),
     {
-      name: 'unhandledRejection.txt',
+      name: 'unhandledRejection.js',
     },
   );
   try {
@@ -70,7 +70,7 @@ process.on('uncaughtException', async error => {
   const lista = await new discord.AttachmentBuilder(
     Buffer.from(error.toString()),
     {
-      name: 'uncaughtException.txt',
+      name: 'uncaughtException.js',
     },
   );
   try {
