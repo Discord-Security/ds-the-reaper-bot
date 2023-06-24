@@ -7,11 +7,11 @@ module.exports = async (client, interaction) => {
     if (interaction.customId.startsWith('Registrar'))
       return require('../button/registrar')(client, interaction);
     else
-      require('../button/' + interaction.customId)(client, interaction).catch(
-        err => {
-          if (err) return 0;
-        },
-      );
+      try {
+        require('../button/' + interaction.customId)(client, interaction);
+      } catch (err) {
+        if (err) return 0;
+      }
   }
   if (interaction.isStringSelectMenu()) {
     require('../menu/' + interaction.values[0])(client, interaction);
