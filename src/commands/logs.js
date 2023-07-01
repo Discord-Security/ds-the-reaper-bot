@@ -68,67 +68,26 @@ module.exports = {
     } com sucesso.`;
 
     const doc = await client.db.Guilds.findOne({ _id: interaction.guild.id });
-    switch (tipo) {
-      case 'apagado':
-        if (doc) {
-          doc.logs.deletedMessage = ativado === true ? canal.id : '';
-          doc.save();
-        } else if (!doc) {
-          new client.db.Guilds({
-            _id: interaction.guild.id,
-            logs: { deletedMessage: ativado === true ? canal.id : '' },
-          }).save();
-        }
-        interaction.reply({ content: message });
-        break;
-      case 'editado':
-        if (doc) {
-          doc.logs.editedMessage = ativado === true ? canal.id : '';
-          doc.save();
-        } else if (!doc) {
-          new client.db.Guilds({
-            _id: interaction.guild.id,
-            logs: { editedMessage: ativado === true ? canal.id : '' },
-          }).save();
-        }
-        interaction.reply({ content: message });
-        break;
-      case 'entrada':
-        if (doc) {
-          doc.logs.joinedMember = ativado === true ? canal.id : '';
-          doc.save();
-        } else if (!doc) {
-          new client.db.Guilds({
-            _id: interaction.guild.id,
-            logs: { joinedMember: ativado === true ? canal.id : '' },
-          }).save();
-        }
-        interaction.reply({ content: message });
-        break;
-      case 'saida':
-        if (doc) {
-          doc.logs.leftMember = ativado === true ? canal.id : '';
-          doc.save();
-        } else if (!doc) {
-          new client.db.Guilds({
-            _id: interaction.guild.id,
-            logs: { leftMember: ativado === true ? canal.id : '' },
-          }).save();
-        }
-        interaction.reply({ content: message });
-        break;
-      case 'Punições Reaper':
-        if (doc) {
-          doc.logs.punishments = ativado === true ? canal.id : '';
-          doc.save();
-        } else if (!doc) {
-          new client.db.Guilds({
-            _id: interaction.guild.id,
-            logs: { punishments: ativado === true ? canal.id : '' },
-          }).save();
-        }
-        interaction.reply({ content: message });
-        break;
+    const logs = {
+      'apagado': 'deletedMessage',
+      'editado': 'editedMessage',
+      'entrada': 'joinedMember',
+      'saida': 'leftMember',
+      'Punições Reaper': 'punishments',
+    };
+
+    const logsKey = logs[tipo];
+
+    if (doc) {
+      doc.logs[logsKey] = ativado === true ? canal.id : '';
+      doc.save();
+    } else {
+      new client.db.Guilds({
+        _id: interaction.guild.id,
+        logs: { [logsKey]: ativado === true ? canal.id : '' },
+      }).save();
     }
+
+    interaction.reply({ content: message });
   },
 };
