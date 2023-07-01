@@ -207,7 +207,10 @@ module.exports = {
         break;
       }
       case 'testar': {
-        interaction.deferReply();
+        interaction.reply({
+          content: 'Evento emitido com sucesso.',
+          ephemeral: true,
+        });
         client.emit('guildMemberAdd', interaction.member);
       }
     }
