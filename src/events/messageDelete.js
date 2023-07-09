@@ -4,6 +4,8 @@ module.exports = async (client, message) => {
   if (message.author.bot) return 0;
 
   const doc = await client.db.Guilds.findOne({ _id: message.guild.id });
+  
+  if (!message.attachments.size >= 1 || !message.content) return 0;
 
   if (
     doc &&
@@ -11,9 +13,7 @@ module.exports = async (client, message) => {
     doc.logs.deletedMessage !== undefined &&
     doc.logs.deletedMessage !== null
   ) {
-    const fields = [
-      { name: 'Canal:', value: message.channel.toString() },
-    ];
+    const fields = [{ name: 'Canal:', value: message.channel.toString() }];
 
     if (message.content) {
       fields.unshift({
