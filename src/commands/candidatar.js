@@ -128,123 +128,123 @@ module.exports = {
             )}`,
           });
         }
-      } else {
-        const guild = await client.db.Guilds.findOne({
-          _id: interaction.guild.id,
-        }).lean();
+      }
+    } else {
+      const guild = await client.db.Guilds.findOne({
+        _id: interaction.guild.id,
+      }).lean();
 
-        if (guild.approved === true)
-          return interaction.reply({
-            content: 'Este servidor já foi aprovado dentro da rede.',
-            ephemeral: true,
-          });
+      if (guild.approved === true)
+        return interaction.reply({
+          content: 'Este servidor já foi aprovado dentro da rede.',
+          ephemeral: true,
+        });
 
-        const modal = new discord.ModalBuilder()
-          .setCustomId('candidatar')
-          .setTitle('Formulário de candidatação');
+      const modal = new discord.ModalBuilder()
+        .setCustomId('candidatar')
+        .setTitle('Formulário de candidatação');
 
-        const IdadeInput = new discord.TextInputBuilder()
-          .setCustomId('IdadeInput')
-          .setLabel('Qual sua idade?')
-          .setStyle(discord.TextInputStyle.Short)
-          .setRequired(true);
+      const IdadeInput = new discord.TextInputBuilder()
+        .setCustomId('IdadeInput')
+        .setLabel('Qual sua idade?')
+        .setStyle(discord.TextInputStyle.Short)
+        .setRequired(true);
 
-        const firstActionRow = new discord.ActionRowBuilder().addComponents(
-          IdadeInput,
-        );
+      const firstActionRow = new discord.ActionRowBuilder().addComponents(
+        IdadeInput,
+      );
 
-        const MotivoInput = new discord.TextInputBuilder()
-          .setCustomId('MotivoInput')
-          .setLabel('Porque você gostaria de se juntar á rede?')
-          .setStyle(discord.TextInputStyle.Paragraph)
-          .setMaxLength(512)
-          .setRequired(true);
+      const MotivoInput = new discord.TextInputBuilder()
+        .setCustomId('MotivoInput')
+        .setLabel('Porque você gostaria de se juntar á rede?')
+        .setStyle(discord.TextInputStyle.Paragraph)
+        .setMaxLength(512)
+        .setRequired(true);
 
-        const secondActionRow = new discord.ActionRowBuilder().addComponents(
-          MotivoInput,
-        );
+      const secondActionRow = new discord.ActionRowBuilder().addComponents(
+        MotivoInput,
+      );
 
-        modal.addComponents(firstActionRow, secondActionRow);
+      modal.addComponents(firstActionRow, secondActionRow);
 
-        await interaction.showModal(modal);
+      await interaction.showModal(modal);
 
-        const i = await interaction
-          .awaitModalSubmit({
-            time: 300000,
-            filter: i => i.user.id === interaction.user.id,
-          })
-          .catch(error => {
-            if (error) return null;
-          });
+      const i = await interaction
+        .awaitModalSubmit({
+          time: 300000,
+          filter: i => i.user.id === interaction.user.id,
+        })
+        .catch(error => {
+          if (error) return null;
+        });
 
-        if (i) {
-          const motivo = i.fields.getTextInputValue('MotivoInput');
-          const idade = parseInt(i.fields.getTextInputValue('IdadeInput'));
+      if (i) {
+        const motivo = i.fields.getTextInputValue('MotivoInput');
+        const idade = parseInt(i.fields.getTextInputValue('IdadeInput'));
 
-          if (!isNaN(idade) && idade < 13)
-            return i.reply({
-              content:
-                'Você não pode acessar nossa rede devido à idade insuficiente exigida pelo Discord, o que violaria os Termos de Serviço da plataforma.',
-              ephemeral: true,
-            });
-          
-          i.reply({
+        if (!isNaN(idade) && idade < 13)
+          return i.reply({
             content:
-              'Sua candidatação foi enviada com sucesso e está em análise.',
+              'Você não pode acessar nossa rede devido à idade insuficiente exigida pelo Discord, o que violaria os Termos de Serviço da plataforma.',
             ephemeral: true,
           });
 
-          const invite = await interaction.channel.createInvite({
-            maxAge: 0,
-            maxUses: 0,
-          });
+        i.reply({
+          content:
+            'Sua candidatação foi enviada com sucesso e está em análise.',
+          ephemeral: true,
+        });
 
-          const guild = interaction.guild;
+        const invite = await interaction.channel.createInvite({
+          maxAge: 0,
+          maxUses: 0,
+        });
 
-          const member = interaction.member;
+        const guild = interaction.guild;
 
-          const approve = new discord.ButtonBuilder()
-            .setCustomId('approve-' + guild.id)
-            .setLabel('Aprovar')
-            .setStyle(2)
-            .setEmoji('1026116735759302727');
+        const member = interaction.member;
 
-          const reject = new discord.ButtonBuilder()
-            .setCustomId('reject-' + guild.id)
-            .setLabel('Rejeitar')
-            .setStyle(2)
-            .setEmoji('1026116707770712136');
+        const approve = new discord.ButtonBuilder()
+          .setCustomId('approve-' + guild.id)
+          .setLabel('Aprovar')
+          .setStyle(2)
+          .setEmoji('1026116735759302727');
 
-          const row = new discord.ActionRowBuilder().setComponents(
-            approve,
-            reject,
-          );
+        const reject = new discord.ButtonBuilder()
+          .setCustomId('reject-' + guild.id)
+          .setLabel('Rejeitar')
+          .setStyle(2)
+          .setEmoji('1026116707770712136');
 
-          const embed = new discord.EmbedBuilder()
-            .setTitle(guild.name)
-            .addFields([
-              {
-                name: '👑 Solicitador:',
-                value: `ID: ${member.id}\nTag: ${member.user.tag}\nIdade: ${idade}\nMotivo: ${motivo}`,
-              },
-              {
-                name: '📜 Servidor:',
-                value: `ID: ${guild.id.toString()}\nDono: ${
-                  guild.ownerId
-                }\nMembros: ${guild.memberCount}`,
-              },
-              {
-                name: '📨 Convite:',
-                value: invite.url,
-              },
-            ])
-            .setThumbnail(interaction.guild.iconURL({ dynamic: true }))
-            .setColor(client.cor);
+        const row = new discord.ActionRowBuilder().setComponents(
+          approve,
+          reject,
+        );
 
-          client.channels.cache
-            .get('1050494003155570708')
-            .send({ content: '@everyone', embeds: [embed], components: [row] });
-        }
+        const embed = new discord.EmbedBuilder()
+          .setTitle(guild.name)
+          .addFields([
+            {
+              name: '👑 Solicitador:',
+              value: `ID: ${member.id}\nTag: ${member.user.tag}\nIdade: ${idade}\nMotivo: ${motivo}`,
+            },
+            {
+              name: '📜 Servidor:',
+              value: `ID: ${guild.id.toString()}\nDono: ${
+                guild.ownerId
+              }\nMembros: ${guild.memberCount}`,
+            },
+            {
+              name: '📨 Convite:',
+              value: invite.url,
+            },
+          ])
+          .setThumbnail(interaction.guild.iconURL({ dynamic: true }))
+          .setColor(client.cor);
+
+        client.channels.cache
+          .get('1050494003155570708')
+          .send({ content: '@everyone', embeds: [embed], components: [row] });
       }
     }
   },
