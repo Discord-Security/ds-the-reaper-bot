@@ -53,6 +53,8 @@ module.exports = async (client, member) => {
   } catch (err) {
     if (err.code === 'EPIPE') process.exit(1);
     if (
+      doc &&
+      doc.logs &&
       doc.logs.punishments !== '' &&
       doc.logs.punishments !== undefined &&
       doc.logs.punishments !== null
