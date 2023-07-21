@@ -57,7 +57,7 @@ module.exports = {
       .addFields(
         {
           name: "<:Discord_ID:1028818985942253578> ID's:",
-          value: `> ${ids}`,
+          value: `> ${ids.split(" ").join("\n > ")}`,
           inline: true,
         },
         {
