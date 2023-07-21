@@ -80,62 +80,62 @@ module.exports = async client => {
     });
 
     if (guildsWithRssFeeds.length > 0) {
-      await guildsWithRssFeeds.map(async guild => {
+      guildsWithRssFeeds.map(async guild => {
         guild.rssfeeds.map(async rssFeed => {
-          const data = await client.request.parseURL(
-            rssFeed._id,
-          ); /* .catch(err => {
-            if (err) return 0;
-          }); */
-          if (
-            (data.items && rssFeed.lastItem === data.items[0].link) ||
-            (data.items && rssFeed.penultimateItem === data.items[0].link)
-          )
-            return 0;
-          let message;
           try {
-            message = JSON.parse(
-              rssFeed.message
-                .replace('%title', data.items[0].title.replace('&quot;', '"'))
-                .replace('%url', data.items[0].link)
-                .replace('%creator', data.items[0].creator)
-                .replace('%guid', data.items[0].guid)
-                .replace('%date', Date.now(data.items[0].pubDate)),
-            );
-          } catch (err) {
-            return new Error(
-              `Falhou o JSON Parse de ${guild._id} - ${rssFeed._id} com: \n` +
-                err,
-            );
-          }
+            const data = await client.request.parseURL(rssFeed._id);
+            if (
+              (data.items && rssFeed.lastItem === data.items[0].link) ||
+              (data.items && rssFeed.penultimateItem === data.items[0].link)
+            )
+              return 0;
+            let message;
+            try {
+              message = JSON.parse(
+                rssFeed.message
+                  .replace('%title', data.items[0].title.replace('&quot;', '"'))
+                  .replace('%url', data.items[0].link)
+                  .replace('%creator', data.items[0].creator)
+                  .replace('%guid', data.items[0].guid)
+                  .replace('%date', Date.now(data.items[0].pubDate)),
+              );
+            } catch (err) {
+              return new Error(
+                `Falhou o JSON Parse de ${guild._id} - ${rssFeed._id} com: \n` +
+                  err,
+              );
+            }
 
-          if (message)
-            Promise.resolve(client.channels.fetch(rssFeed.channel))
-              .then(channel => {
-                channel
-                  .send(message)
-                  .then(async () => {
-                    await client.db.Guilds.findOneAndUpdate(
-                      {
-                        '_id': guild._id,
-                        'rssfeeds._id': rssFeed._id,
-                      },
-                      {
-                        $set: {
-                          'rssfeeds.$.penultimateItem': rssFeed.lastItem,
-                          'rssfeeds.$.lastItem': data.items[0].link,
+            if (message)
+              Promise.resolve(client.channels.fetch(rssFeed.channel))
+                .then(channel => {
+                  channel
+                    .send(message)
+                    .then(async () => {
+                      await client.db.Guilds.findOneAndUpdate(
+                        {
+                          '_id': guild._id,
+                          'rssfeeds._id': rssFeed._id,
                         },
-                      },
-                      { new: true },
-                    );
-                  })
-                  .catch(err => {
-                    if (err) return 0;
-                  });
-              })
-              .catch(err => {
-                if (err) return 0;
-              });
+                        {
+                          $set: {
+                            'rssfeeds.$.penultimateItem': rssFeed.lastItem,
+                            'rssfeeds.$.lastItem': data.items[0].link,
+                          },
+                        },
+                        { new: true },
+                      );
+                    })
+                    .catch(() => {
+                      return 0;
+                    });
+                })
+                .catch(() => {
+                  return 0;
+                });
+          } catch (err) {
+            return 0;
+          }
         });
       });
     }
