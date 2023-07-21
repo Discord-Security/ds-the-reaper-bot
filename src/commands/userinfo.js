@@ -6,7 +6,7 @@ module.exports = {
     .setName('userinfo')
     .setNameLocalizations({
       'pt-BR': 'info_usuário',
-      'en-US': 'userinfo'
+      'en-US': 'userinfo',
     })
     .setDescription('Veja várias informações úteis do usuário!')
     .addUserOption(option =>
@@ -14,13 +14,13 @@ module.exports = {
         .setName('usuário')
         .setNameLocalizations({ 'pt-BR': 'usuário', 'en-US': 'user' })
         .setDescription('Identifique o utilizador')
-        .setRequired(true)
+        .setRequired(true),
     ),
-  async execute (interaction, client) {
+  async execute(interaction, client) {
     const membro = interaction.options.getMember('usuário');
     if (!membro) {
       return interaction.reply({
-        content: 'Sup! Não foi encontrado um usuário dentro deste servidor.'
+        content: 'Sup! Não foi encontrado um usuário dentro deste servidor.',
       });
     }
 
@@ -41,7 +41,11 @@ module.exports = {
       .setLabel('Cargos')
       .setEmoji('1041100114762149958')
       .setStyle(2);
-    const row = new discord.ActionRowBuilder().addComponents(info, guilds, roles);
+    const row = new discord.ActionRowBuilder().addComponents(
+      info,
+      guilds,
+      roles,
+    );
 
     const embed = new discord.EmbedBuilder()
       .setTitle(membro.user.tag)
@@ -49,48 +53,48 @@ module.exports = {
         {
           name: '<:Discord_ID:1028818985942253578> ID:',
           value: membro.user.id,
-          inline: true
+          inline: true,
         },
         {
           name: '<:Discord_Join:1041100297629597836> Criada em: ',
           value: `${discord.time(membro.user.createdAt, 'f')} (${discord.time(
             membro.user.createdAt,
-            'R'
+            'R',
           )})`,
-          inline: true
+          inline: true,
         },
         {
           name: '<:exit:1039949967772622948> Entrou em: ',
           value: membro.joinedTimestamp
             ? `${discord.time(
                 Math.floor(membro.joinedTimestamp / 1000),
-                'f'
+                'f',
               )} (${discord.time(
                 Math.floor(membro.joinedTimestamp / 1000),
-                'R'
+                'R',
               )})`
             : 'Não está dentro do servidor.',
-          inline: true
+          inline: true,
         },
         {
           name: '<:Discord_Danger:1028818835148656651> Histórico de avisos:',
           value:
             doc && doc.warns
               ? `\`\`\`${doc.warns.join('\n')}\`\`\``
-              : 'Sem avisos'
-        }
+              : 'Sem avisos',
+        },
       )
       .setColor(client.cor)
       .setThumbnail(membro.user.displayAvatarURL({ extension: 'png' }));
     const mensagem = await interaction.reply({
       embeds: [embed],
-      components: [row]
+      components: [row],
     });
     const filter = i => interaction.user.id === i.user.id;
     const collector = mensagem.createMessageComponentCollector({
       componentType: discord.ComponentType.Button,
       filter,
-      time: 300000
+      time: 300000,
     });
 
     collector.on('collect', async i => {
@@ -100,7 +104,7 @@ module.exports = {
       if (i.customId === 'guilds') {
         const { body } = await superagent
           .get(
-            `https://floppapower.perfectdreams.net/api/v1/users/${membro.user.id}/guilds`
+            `https://floppapower.perfectdreams.net/api/v1/users/${membro.user.id}/guilds`,
           )
           .catch(err => {
             if (err) return [];
@@ -120,10 +124,10 @@ module.exports = {
                   g.name
                     .replace(
                       /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]|)/g,
-                      ''
+                      '',
                     )
                     .replace('  ', ' ') +
-                  '```'
+                  '```',
               )
               .join('')}\n\nOutros servidores por aí:\n\n${
               body
@@ -134,14 +138,14 @@ module.exports = {
                         g.name
                           .replace(
                             /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]|)/g,
-                            ''
+                            '',
                           )
                           .replace('  ', ' ') +
-                        '```'
+                        '```',
                     )
                     .join('')
                 : 'Sem servidores.'
-            }`
+            }`,
           );
         interaction.editReply({ embeds: [guildsemb] });
       }
@@ -154,10 +158,10 @@ module.exports = {
             `${
               membro._roles.map(role => '<@&' + role + '>').join(', ') ||
               'Sem cargos.'
-            }`
+            }`,
           );
         interaction.editReply({ embeds: [guildsemb] });
       }
     });
-  }
+  },
 };

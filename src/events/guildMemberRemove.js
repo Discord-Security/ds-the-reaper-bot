@@ -35,46 +35,43 @@ module.exports = async (client, member) => {
       doc.logs.punishments !== undefined &&
       doc.logs.punishments !== null
     ) {
+      const fetchedLogs = await member.guild.fetchAuditLogs({
+        limit: 1,
+        type: 20,
+      });
+      const kickLog = fetchedLogs.entries.first();
 
-        const fetchedLogs = await member.guild.fetchAuditLogs({
-          limit: 1,
-          type: 20,
-        });
-        const kickLog = fetchedLogs.entries.first();
+      if (!kickLog) return 0;
 
-        if (!kickLog) return 0;
+      const { executor, target } = kickLog;
 
-        const { executor, target } = kickLog;
-
-        if (target.id === member.id) {
-          const emb = new discord.EmbedBuilder()
-            .setColor(client.cor)
-            .setDescription(
-              `***${
-                member.user.tag
-              }* | Membro __Expulso__**\n\n<:Discord_Danger:1028818835148656651> **Usuário:**\nTag: \`${
-                member.user.tag
-              }\`\nID: \`${
-                member.user.id
-              }\`\n\n<:Discord_Info:1036702634603728966> **Moderador:**\nTag: \`${
-                executor.tag || 'Desconhecido'
-              }\`\nID: \`${
-                executor.id || 'Desconhecido'
-              }\`\n\n<:Discord_Chat:1035624171960541244> **Motivo:**\n\`${
-                kickLog.reason || 'Sem Motivo'
-              }\``,
-            )
-            .setColor(client.cor);
-          client.channels.cache
-            .get(doc.logs.punishments)
-            .send({ embeds: [emb] });
-          client.trySend(
-            doc.logs.punishments,
-            member.guild,
-            { embeds: [emb] },
-            'logs de punições (Kick)',
-          );
-        }
+      if (target.id === member.id) {
+        const emb = new discord.EmbedBuilder()
+          .setColor(client.cor)
+          .setDescription(
+            `***${
+              member.user.tag
+            }* | Membro __Expulso__**\n\n<:Discord_Danger:1028818835148656651> **Usuário:**\nTag: \`${
+              member.user.tag
+            }\`\nID: \`${
+              member.user.id
+            }\`\n\n<:Discord_Info:1036702634603728966> **Moderador:**\nTag: \`${
+              executor.tag || 'Desconhecido'
+            }\`\nID: \`${
+              executor.id || 'Desconhecido'
+            }\`\n\n<:Discord_Chat:1035624171960541244> **Motivo:**\n\`${
+              kickLog.reason || 'Sem Motivo'
+            }\``,
+          )
+          .setColor(client.cor);
+        client.channels.cache.get(doc.logs.punishments).send({ embeds: [emb] });
+        client.trySend(
+          doc.logs.punishments,
+          member.guild,
+          { embeds: [emb] },
+          'logs de punições (Kick)',
+        );
+      }
     }
     if (
       doc &&

@@ -10,7 +10,7 @@ module.exports = async (client, interaction) => {
       client.guilds.cache.get(argumentos[2]).name
     }. Boas-vindas!`,
   });
-  
+
   const staff = await client.db.Staffs.findOne({ _id: argumentos[1] });
 
   if (staff) {

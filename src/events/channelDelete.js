@@ -1,8 +1,13 @@
 const discord = require('discord.js');
 
 module.exports = async (client, channel) => {
-  if (channel.type === discord.ChannelType.GuildVoice || channel.type === discord.ChannelType.GuildStageVoice) return;
-  if (channel.name.startsWith("ticket-") || channel.name.startsWith("closed-")) return;
+  if (
+    channel.type === discord.ChannelType.GuildVoice ||
+    channel.type === discord.ChannelType.GuildStageVoice
+  )
+    return;
+  if (channel.name.startsWith('ticket-') || channel.name.startsWith('closed-'))
+    return;
   let author = null;
   await channel.guild
     .fetchAuditLogs({ type: 12, limit: 3 })
@@ -29,7 +34,8 @@ module.exports = async (client, channel) => {
       },
       {
         name: '👦 Autor:',
-        value: author === null ? 'Desconhecido' : `**${author.tag}** ${author.id}`,
+        value:
+          author === null ? 'Desconhecido' : `**${author.tag}** ${author.id}`,
         inline: true,
       },
     ])

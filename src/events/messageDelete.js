@@ -4,7 +4,7 @@ module.exports = async (client, message) => {
   if (message.author.bot) return 0;
 
   const doc = await client.db.Guilds.findOne({ _id: message.guild.id });
-  
+
   if (!message.attachments.size >= 1 || !message.content) return 0;
 
   if (
@@ -18,7 +18,10 @@ module.exports = async (client, message) => {
     if (message.content) {
       fields.unshift({
         name: 'Conteúdo da Mensagem:',
-        value: `\`\`\`ansi\n[2;31m${message.content.substr(0, 800)}[0m[2;31m[0m\n\`\`\``,
+        value: `\`\`\`ansi\n[2;31m${message.content.substr(
+          0,
+          800,
+        )}[0m[2;31m[0m\n\`\`\``,
         inline: false,
       });
     }

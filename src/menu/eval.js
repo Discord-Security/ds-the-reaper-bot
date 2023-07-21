@@ -5,13 +5,13 @@ module.exports = async (client, interaction) => {
   if (interaction.user.id !== '354233941550694400') return;
   interaction.deferUpdate();
   interaction.channel.send({
-    content: 'Escreva um código.'
+    content: 'Escreva um código.',
   });
   const filter = m => interaction.user.id === m.author.id;
   const collector = interaction.channel.createMessageCollector({
     filter,
     time: 300000,
-    max: 1
+    max: 1,
   });
 
   collector.on('collect', async message => {
@@ -30,7 +30,7 @@ module.exports = async (client, interaction) => {
       const wd = new discord.EmbedBuilder()
         .setAuthor({
           name: '» [Watch Dogs] ESTE BOT ESTÁ PROTEGIDO COM SISTEMA WATCH DOGS!',
-          iconURL: client.err
+          iconURL: client.err,
         })
         .setColor(client.cor);
       return message.reply({ embeds: [wd] });

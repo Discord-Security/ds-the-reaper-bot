@@ -13,7 +13,7 @@ module.exports = async (client, member) => {
     try {
       const fetchedLogs = await member.guild.fetchAuditLogs({
         limit: 1,
-        type: 23
+        type: 23,
       });
       const unbanLog = fetchedLogs.entries.first();
 
@@ -33,14 +33,14 @@ module.exports = async (client, member) => {
               member.user.id
             }\`\n\n<:Discord_Info:1036702634603728966> **Moderador:**\nTag: \`${
               executor.tag || 'Desconhecido'
-            }\`\nID: \`${executor.id || 'Desconhecido'}\``
+            }\`\nID: \`${executor.id || 'Desconhecido'}\``,
           )
           .setColor(client.cor);
         client.channels.cache.get(doc.logs.punishments).send({ embeds: [emb] });
       }
     } catch (err) {
       client.channels.cache.get(client.canais.strikes).send({
-        content: `<@${member.guild.ownerId}>, seu servidor ${member.guild.name} falhou ao enviar mensagem do log de punições: ${err}`
+        content: `<@${member.guild.ownerId}>, seu servidor ${member.guild.name} falhou ao enviar mensagem do log de punições: ${err}`,
       });
     }
   }

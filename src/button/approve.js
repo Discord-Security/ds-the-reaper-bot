@@ -6,7 +6,7 @@ module.exports = async (client, interaction) => {
   interaction.reply({
     content: `Prontinho, Servidor ${id} aprovado com sucesso por ${interaction.member}!`,
   });
-  
+
   client.channels.cache.get('1025774984037146686').send({
     content: `<:Discord_Join:1041100297629597836> O servidor ${
       client.guilds.cache.get(id).name

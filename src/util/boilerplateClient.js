@@ -12,8 +12,8 @@ module.exports = client => {
     .then(() =>
       console.log(
         `${ChalkAdvanced.gray('>')} ${ChalkAdvanced.green(
-          '✅ • Carregado com sucesso [DISCORD CLIENT]'
-        )}`
-      )
+          '✅ • Carregado com sucesso [DISCORD CLIENT]',
+        )}`,
+      ),
     );
 };
