@@ -1,4 +1,5 @@
 const discord = require('discord.js');
+const { createPaste } = require('dpaste-ts');
 
 module.exports = {
   data: new discord.SlashCommandBuilder()
@@ -140,7 +141,13 @@ module.exports = {
       case 'criar': {
         const url = interaction.options.getString('url');
         const canal = interaction.options.getChannel('canal');
-        doc.rssfeeds.push({ _id: url, channel: canal.id, disabled: false, lastItem: "a", penultimateItem: "a" });
+        doc.rssfeeds.push({
+          _id: url,
+          channel: canal.id,
+          disabled: false,
+          lastItem: 'a',
+          penultimateItem: 'a',
+        });
         doc.save();
         interaction.reply({ content: 'Feito com sucesso.' });
         break;
@@ -149,6 +156,10 @@ module.exports = {
         const rssFeed = doc.rssfeeds.id(feed);
         if (!rssFeed)
           return interaction.reply({ content: 'Nada foi encontrado.' });
+        const paste = await createPaste({
+          content: rssFeed.message,
+          syntax: 'json',
+        });
         const emb = new discord.EmbedBuilder()
           .setColor(client.cor)
           .setTitle((!rssFeed.disabled ? '🟢' : '🔴') + ' Alterar RSS')
@@ -164,136 +175,181 @@ module.exports = {
             },
             {
               name: '<:Discord_Chat:1035624171960541244> Mensagem',
-              value: `\`${rssFeed.message}\``,
+              value: `[No DPaste](${paste})`,
             },
           ]);
         const row = new discord.ActionRowBuilder().setComponents(
           new discord.ButtonBuilder()
-            .setCustomId('link')
-            .setLabel('Mudar link')
-            .setStyle(discord.ButtonStyle.Secondary),
-          new discord.ButtonBuilder()
-            .setCustomId('mensagem')
-            .setLabel('Alterar mensagem')
-            .setStyle(discord.ButtonStyle.Secondary),
-          new discord.ButtonBuilder()
-            .setCustomId('canal')
-            .setLabel('Mudar canal')
-            .setStyle(discord.ButtonStyle.Secondary),
-        );
-        const row2 = new discord.ActionRowBuilder().setComponents(
-          new discord.ButtonBuilder()
             .setCustomId('estado')
             .setLabel(rssFeed.disabled ? 'Ativar' : 'Desativar')
+            .setEmoji(
+              rssFeed.disabled ? '1026116938608410647' : '1026116942202941561',
+            )
             .setStyle(
               rssFeed.disabled
                 ? discord.ButtonStyle.Success
                 : discord.ButtonStyle.Danger,
             ),
+          new discord.ButtonBuilder()
+            .setCustomId('link')
+            .setLabel('Mudar link')
+            .setEmoji('1131743178484088883')
+            .setStyle(discord.ButtonStyle.Secondary),
+          new discord.ButtonBuilder()
+            .setCustomId('mensagem')
+            .setLabel('Alterar mensagem')
+            .setEmoji('1035624171960541244')
+            .setStyle(discord.ButtonStyle.Secondary),
+          new discord.ButtonBuilder()
+            .setCustomId('canal')
+            .setLabel('Mudar canal')
+            .setEmoji('1035624104264470648')
+            .setStyle(discord.ButtonStyle.Secondary),
         );
-        interaction
-          .reply({ embeds: [emb], components: [row, row2] })
-          .then(msg => {
-            const collector = msg.createMessageComponentCollector({
-              componentType: discord.ComponentType.Button,
-              time: 300000,
-            });
-            collector.on('collect', i => {
-              if (i.user.id === interaction.user.id) {
-                switch (i.customId) {
-                  case 'estado': {
-                    i.reply(
-                      `${
-                        !rssFeed.disabled ? 'Desativado' : 'Ativado'
-                      } com sucesso`,
+        interaction.reply({ embeds: [emb], components: [row] }).then(msg => {
+          const collector = msg.createMessageComponentCollector({
+            componentType: discord.ComponentType.Button,
+            time: 300000,
+          });
+          collector.on('collect', async i => {
+            if (i.user.id === interaction.user.id) {
+              switch (i.customId) {
+                case 'estado': {
+                  i.reply({
+                    content:
+                      (!rssFeed.disabled ? 'Desativado' : 'Ativado') +
+                      ' com sucesso',
+                  });
+                  rssFeed.disabled = !rssFeed.disabled;
+                  return doc.save();
+                }
+                case 'link': {
+                  const linkInput = new discord.TextInputBuilder()
+                    .setCustomId('linkInput')
+                    .setLabel('Qual o novo link RSS?')
+                    .setValue(rssFeed._id)
+                    .setRequired(true)
+                    .setStyle(discord.TextInputStyle.Short);
+                  const modal = new discord.ModalBuilder()
+                    .setCustomId('linkRSS')
+                    .setTitle('Alteração de Link RSS')
+                    .setComponents(
+                      new discord.ActionRowBuilder().addComponents(linkInput),
                     );
-                    rssFeed.disabled = !rssFeed.disabled;
+
+                  await i.showModal(modal);
+                  const enviada = await interaction
+                    .awaitModalSubmit({
+                      time: 3600000,
+                      filter: i =>
+                        i.user.id === interaction.user.id &&
+                        i.customId === 'linkRSS',
+                    })
+                    .catch(error => {
+                      if (error) return null;
+                    });
+
+                  if (enviada) {
+                    const link = await enviada.fields.getTextInputValue(
+                      'linkInput',
+                    );
+                    if (
+                      !link.startsWith('http://') &&
+                      !link.startsWith('https://')
+                    )
+                      return enviada.reply('Link inválido.');
+                    rssFeed._id = link;
                     doc.save();
-                    break;
+                    enviada.reply('Atualizado com sucesso!');
                   }
-                  case 'link': {
-                    i.reply({ content: 'Envie o novo link RSS.' });
-                    const collector =
-                      interaction.channel.createMessageCollector({
-                        filter: m => m.author.id === interaction.author.id,
-                        time: 300000,
-                        max: 1,
-                      });
-
-                    collector.on('collect', m => {
-                      if (
-                        !m.content.startsWith('http://') ||
-                        !m.content.startsWith('https://')
-                      )
-                        return m.reply('Link inválido.');
-                      rssFeed._id = m.content;
-                      doc.save();
-                      m.reply('Definido com sucesso.');
+                  break;
+                }
+                case 'canal': {
+                  i.reply({
+                    content: 'Selecione um canal.',
+                    components: [
+                      new discord.ActionRowBuilder().setComponents(
+                        new discord.ChannelSelectMenuBuilder()
+                          .setChannelTypes(discord.ChannelType.GuildText)
+                          .setMaxValues(1)
+                          .setCustomId('canal'),
+                      ),
+                    ],
+                  }).then(m => {
+                    const collector = m.createMessageComponentCollector({
+                      componentType: discord.ComponentType.ChannelSelect,
+                      time: 300000,
+                      max: 1,
                     });
-                    break;
-                  }
-                  case 'canal': {
-                    i.reply({ content: 'Envie uma menção de um canal.' });
-                    const collector =
-                      interaction.channel.createMessageCollector({
-                        filter: m => m.author.id === interaction.author.id,
-                        time: 300000,
-                        max: 1,
-                      });
-
-                    collector.on('collect', m => {
-                      const channelId = m.content.match(/\d+/)[0];
-                      if (!channelId)
-                        return m.reply({
-                          content: 'Envie uma menção de um canal válido.',
-                        });
-                      rssFeed.channel = channelId;
-                      doc.save();
-                    });
-                    break;
-                  }
-                  case 'mensagem': {
-                    i.reply({
-                      content:
-                        'Você selecionou a opção de Mensagem. Para isso você poderá personalizar toda a sua mensagem neste site: https://glitchii.github.io/embedbuilder/ , tendo em conta as variáveis do RSS disponíveis em nossa documentação. Você tem 5 minutos para enviar a mensagem personalizada para este feed ou diga `cancelar` para ser anulada a nova mensagem.',
-                    });
-                    const filter = m => interaction.user.id === m.author.id;
-                    const collector =
-                      interaction.channel.createMessageCollector({
-                        filter,
-                        time: 300000,
-                        max: 1,
-                      });
-
-                    collector.on('collect', async m => {
-                      if (m.content === 'cancelar') return 0;
-                      try {
-                        const pe = JSON.parse(m.content);
-                        interaction.channel.send(pe).catch(err => {
-                          if (err)
-                            return interaction.channel.send(
-                              'A Mensagem que você enviou está com erros para ser testada, mas não se preocupe a verificação principal foi certificada!',
-                            );
-                        });
-                        rssFeed.message = m.content;
+                    collector.on('collect', i => {
+                      if (i.user.id === interaction.user.id) {
+                        i.reply({ content: 'Sucesso!' });
+                        rssFeed.channel = i.values[0];
                         doc.save();
-                      } catch (err) {
-                        return interaction.channel.send(
-                          'Seu JSON é inválido para minha inteligência, veja se você copiou tudo certo!',
-                        );
                       }
                     });
-                    break;
-                  }
+                  });
+                  break;
                 }
-              } else {
-                i.reply({
-                  content: `Este botão não é para você usar!`,
-                  ephemeral: true,
-                });
+                case 'mensagem': {
+                  const mensagemInput = new discord.TextInputBuilder()
+                    .setCustomId('mensagemInput')
+                    .setLabel('Qual a mensagem?')
+                    .setValue(
+                      'Você selecionou a opção de Mensagem. Para isso você poderá personalizar toda a sua mensagem neste site através de JSON: https://glitchii.github.io/embedbuilder/ , tendo em conta as variáveis do RSS disponíveis em nossa documentação.',
+                    )
+                    .setRequired(true)
+                    .setPlaceholder(rssFeed.message)
+                    .setStyle(discord.TextInputStyle.Paragraph);
+                  const modal = new discord.ModalBuilder()
+                    .setCustomId('mensagemRSS')
+                    .setTitle('Alterar Mensagem')
+                    .setComponents(
+                      new discord.ActionRowBuilder().addComponents(
+                        mensagemInput,
+                      ),
+                    );
+
+                  await i.showModal(modal);
+                  const enviada = await interaction
+                    .awaitModalSubmit({
+                      time: 3600000,
+                      filter: i =>
+                        i.user.id === interaction.user.id &&
+                        i.customId === 'mensagemRSS',
+                    })
+                    .catch(error => {
+                      if (error) return null;
+                    });
+
+                  if (enviada) {
+                    const mensagem =
+                      enviada.fields.getTextInputValue('mensagemInput');
+                    enviada.reply('Atualizado com sucesso!');
+                    try {
+                      const pe = JSON.parse(mensagem);
+                      interaction.channel.send(pe).catch(err => {
+                        if (err) return 0;
+                      });
+                      rssFeed.message = mensagem;
+                      doc.save();
+                    } catch (err) {
+                      return interaction.channel.send(
+                        'Seu JSON é inválido para minha inteligência, veja se você copiou tudo certo!',
+                      );
+                    }
+                  }
+                  break;
+                }
               }
-            });
+            } else {
+              i.reply({
+                content: `Este botão não é para você usar!`,
+                ephemeral: true,
+              });
+            }
           });
+        });
 
         break;
       }

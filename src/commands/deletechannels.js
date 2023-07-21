@@ -26,7 +26,7 @@ module.exports = {
     const category = interaction.guild.channels.cache.filter(
       c => c.parentId === categoria.id,
     );
-    if (category && category.length > 0) {
+    if (category) {
       category.map(channel => {
         return interaction.guild.channels.cache.get(channel.id).delete();
       });
