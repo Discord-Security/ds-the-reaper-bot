@@ -95,11 +95,9 @@ module.exports = {
       ephemeral: true,
     });
 
-    if (doc) {
-      doc.warns.push(motivo);
-      doc.save();
-    } else {
-      new client.db.Users({ _id: membro.id, warns: [motivo] }).save();
-    }
+    if (!doc)
+      return new client.db.Users({ _id: membro.id, warns: [motivo] }).save();
+    doc.warns.push(motivo);
+    return doc.save();
   },
 };

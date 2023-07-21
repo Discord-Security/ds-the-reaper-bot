@@ -84,7 +84,7 @@ module.exports = {
         if (doc) {
           doc.partner.message = i.fields.getTextInputValue('MessageInput');
           doc.save();
-        } else if (!doc) {
+        } else {
           new client.db.Guilds({
             _id: interaction.guild.id,
             partner: {
@@ -101,13 +101,12 @@ module.exports = {
       const doc = await client.db.Guilds.findOne({ _id: interaction.guild.id });
       if (doc) {
         doc.partner.role = role.id;
-        doc.save();
-      } else if (!doc) {
-        new client.db.Guilds({
-          _id: interaction.guild.id,
-          partner: { role: role.id },
-        }).save();
+        return doc.save();
       }
+      return new client.db.Guilds({
+        _id: interaction.guild.id,
+        partner: { role: role.id },
+      }).save();
     }
     if (subcommand === 'canal') {
       const channel = interaction.options.getChannel('canal');
@@ -116,14 +115,13 @@ module.exports = {
       if (doc) {
         doc.partner.channel = channel.id;
         doc.partneractivated = true;
-        doc.save();
-      } else if (!doc) {
-        new client.db.Guilds({
-          _id: interaction.guild.id,
-          partneractivated: true,
-          partner: { channel: channel.id },
-        }).save();
+        return doc.save();
       }
+      return new client.db.Guilds({
+        _id: interaction.guild.id,
+        partneractivated: true,
+        partner: { channel: channel.id },
+      }).save();
     }
     if (subcommand === 'info') {
       const emb = new discord.EmbedBuilder()

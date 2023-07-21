@@ -66,15 +66,15 @@ module.exports = {
       const filtered = guild.automessage.filter(choice =>
         choice._id.toLowerCase().includes(focusedValue.toLowerCase()),
       );
-      await interaction.respond(
+      return await interaction.respond(
         filtered.map(choice => ({ name: choice._id, value: choice._id })),
       );
-    } else {
-      await interaction.respond({
-        name: 'Não há nada listado.',
-        value: 'Não há nada listado.',
-      });
     }
+    
+    await interaction.respond({
+      name: 'Não há nada listado.',
+      value: 'Não há nada listado.',
+    });
   },
   async execute(interaction, client) {
     const subcommand = interaction.options._subcommand;

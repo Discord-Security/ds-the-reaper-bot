@@ -28,11 +28,10 @@ module.exports = {
           'O membro que foi dado não é válido, você deve mencionar alguém dentro do servidor.',
       });
     }
-    await member.timeout(null, reason).catch(error => {
-      if (error)
-        return interaction.reply({
-          content: 'É impossível realizar tal ação contra este usuário.',
-        });
+    await member.timeout(null, reason).catch(() => {
+      return interaction.reply({
+        content: 'É impossível realizar tal ação contra este usuário.',
+      });
     });
     const embed = new discord.EmbedBuilder()
       .setColor(client.cor)

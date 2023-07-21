@@ -34,7 +34,7 @@ module.exports = {
   async execute(interaction, client) {
     const clean = interaction.options.getInteger('mensagens');
     const member = interaction.options.getUser('membro');
-    if (member) {
+    if (member)
       return interaction.channel.messages
         .fetch({
           limit: clean,
@@ -52,13 +52,11 @@ module.exports = {
               });
             });
         });
-    } else {
-      return interaction.channel.bulkDelete(clean, true).then(() => {
-        interaction.reply({
-          content: `Limpei ${clean.toString()} mensagens.`,
-          ephemeral: true,
-        });
+    return interaction.channel.bulkDelete(clean, true).then(() => {
+      interaction.reply({
+        content: `Limpei ${clean.toString()} mensagens.`,
+        ephemeral: true,
       });
-    }
+    });
   },
 };

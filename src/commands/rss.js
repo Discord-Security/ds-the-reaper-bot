@@ -124,7 +124,7 @@ module.exports = {
           filtered.map(choice => ({ name: choice._id, value: choice._id })),
         );
       } else {
-        await interaction.respond({
+        return await interaction.respond({
           name: 'Não há nada listado.',
           value: 'Não há nada listado.',
         });
@@ -212,141 +212,138 @@ module.exports = {
             time: 300000,
           });
           collector.on('collect', async i => {
-            if (i.user.id === interaction.user.id) {
-              switch (i.customId) {
-                case 'estado': {
-                  i.reply({
-                    content:
-                      (!rssFeed.disabled ? 'Desativado' : 'Ativado') +
-                      ' com sucesso',
-                  });
-                  rssFeed.disabled = !rssFeed.disabled;
-                  return doc.save();
-                }
-                case 'link': {
-                  const linkInput = new discord.TextInputBuilder()
-                    .setCustomId('linkInput')
-                    .setLabel('Qual o novo link RSS?')
-                    .setValue(rssFeed._id)
-                    .setRequired(true)
-                    .setStyle(discord.TextInputStyle.Short);
-                  const modal = new discord.ModalBuilder()
-                    .setCustomId('linkRSS')
-                    .setTitle('Alteração de Link RSS')
-                    .setComponents(
-                      new discord.ActionRowBuilder().addComponents(linkInput),
-                    );
-
-                  await i.showModal(modal);
-                  const enviada = await interaction
-                    .awaitModalSubmit({
-                      time: 3600000,
-                      filter: i =>
-                        i.user.id === interaction.user.id &&
-                        i.customId === 'linkRSS',
-                    })
-                    .catch(error => {
-                      if (error) return null;
-                    });
-
-                  if (enviada) {
-                    const link = await enviada.fields.getTextInputValue(
-                      'linkInput',
-                    );
-                    if (
-                      !link.startsWith('http://') &&
-                      !link.startsWith('https://')
-                    )
-                      return enviada.reply('Link inválido.');
-                    rssFeed._id = link;
-                    doc.save();
-                    enviada.reply('Atualizado com sucesso!');
-                  }
-                  break;
-                }
-                case 'canal': {
-                  i.reply({
-                    content: 'Selecione um canal.',
-                    components: [
-                      new discord.ActionRowBuilder().setComponents(
-                        new discord.ChannelSelectMenuBuilder()
-                          .setChannelTypes(discord.ChannelType.GuildText)
-                          .setMaxValues(1)
-                          .setCustomId('canal'),
-                      ),
-                    ],
-                  }).then(m => {
-                    const collector = m.createMessageComponentCollector({
-                      componentType: discord.ComponentType.ChannelSelect,
-                      time: 300000,
-                      max: 1,
-                    });
-                    collector.on('collect', i => {
-                      if (i.user.id === interaction.user.id) {
-                        i.reply({ content: 'Sucesso!' });
-                        rssFeed.channel = i.values[0];
-                        doc.save();
-                      }
-                    });
-                  });
-                  break;
-                }
-                case 'mensagem': {
-                  const mensagemInput = new discord.TextInputBuilder()
-                    .setCustomId('mensagemInput')
-                    .setLabel('Qual a mensagem?')
-                    .setValue(
-                      'Você selecionou a opção de Mensagem. Para isso você poderá personalizar toda a sua mensagem neste site através de JSON: https://glitchii.github.io/embedbuilder/ , tendo em conta as variáveis do RSS disponíveis em nossa documentação.',
-                    )
-                    .setRequired(true)
-                    .setPlaceholder(rssFeed.message)
-                    .setStyle(discord.TextInputStyle.Paragraph);
-                  const modal = new discord.ModalBuilder()
-                    .setCustomId('mensagemRSS')
-                    .setTitle('Alterar Mensagem')
-                    .setComponents(
-                      new discord.ActionRowBuilder().addComponents(
-                        mensagemInput,
-                      ),
-                    );
-
-                  await i.showModal(modal);
-                  const enviada = await interaction
-                    .awaitModalSubmit({
-                      time: 3600000,
-                      filter: i =>
-                        i.user.id === interaction.user.id &&
-                        i.customId === 'mensagemRSS',
-                    })
-                    .catch(error => {
-                      if (error) return null;
-                    });
-
-                  if (enviada) {
-                    const mensagem =
-                      enviada.fields.getTextInputValue('mensagemInput');
-                    enviada.reply('Atualizado com sucesso!');
-                    try {
-                      const pe = JSON.parse(mensagem);
-                      interaction.channel.send(pe).catch(err => {
-                        if (err) return 0;
-                      });
-                      rssFeed.message = mensagem;
-                      doc.save();
-                    } catch (err) {
-                      return interaction.channel.send(
-                        'Seu JSON é inválido para minha inteligência, veja se você copiou tudo certo!',
-                      );
-                    }
-                  }
-                  break;
-                }
-              }
-            } else {
-              i.reply({
+            if (i.user.id !== interaction.user.id)
+              return i.reply({
                 content: `Este botão não é para você usar!`,
                 ephemeral: true,
               });
+
+            switch (i.customId) {
+              case 'estado': {
+                i.reply({
+                  content:
+                    (!rssFeed.disabled ? 'Desativado' : 'Ativado') +
+                    ' com sucesso',
+                });
+                rssFeed.disabled = !rssFeed.disabled;
+                return doc.save();
+              }
+              case 'link': {
+                const linkInput = new discord.TextInputBuilder()
+                  .setCustomId('linkInput')
+                  .setLabel('Qual o novo link RSS?')
+                  .setValue(rssFeed._id)
+                  .setRequired(true)
+                  .setStyle(discord.TextInputStyle.Short);
+                const modal = new discord.ModalBuilder()
+                  .setCustomId('linkRSS')
+                  .setTitle('Alteração de Link RSS')
+                  .setComponents(
+                    new discord.ActionRowBuilder().addComponents(linkInput),
+                  );
+
+                await i.showModal(modal);
+                const enviada = await interaction
+                  .awaitModalSubmit({
+                    time: 3600000,
+                    filter: i =>
+                      i.user.id === interaction.user.id &&
+                      i.customId === 'linkRSS',
+                  })
+                  .catch(error => {
+                    if (error) return null;
+                  });
+
+                if (enviada) {
+                  const link = await enviada.fields.getTextInputValue(
+                    'linkInput',
+                  );
+                  if (
+                    !link.startsWith('http://') &&
+                    !link.startsWith('https://')
+                  )
+                    return enviada.reply('Link inválido.');
+                  rssFeed._id = link;
+                  doc.save();
+                  enviada.reply('Atualizado com sucesso!');
+                }
+                break;
+              }
+              case 'canal': {
+                i.reply({
+                  content: 'Selecione um canal.',
+                  components: [
+                    new discord.ActionRowBuilder().setComponents(
+                      new discord.ChannelSelectMenuBuilder()
+                        .setChannelTypes(discord.ChannelType.GuildText)
+                        .setMaxValues(1)
+                        .setCustomId('canal'),
+                    ),
+                  ],
+                }).then(m => {
+                  const collector = m.createMessageComponentCollector({
+                    componentType: discord.ComponentType.ChannelSelect,
+                    time: 300000,
+                    max: 1,
+                  });
+                  collector.on('collect', i => {
+                    if (i.user.id === interaction.user.id) {
+                      i.reply({ content: 'Sucesso!' });
+                      rssFeed.channel = i.values[0];
+                      doc.save();
+                    }
+                  });
+                });
+                break;
+              }
+              case 'mensagem': {
+                const mensagemInput = new discord.TextInputBuilder()
+                  .setCustomId('mensagemInput')
+                  .setLabel('Qual a mensagem?')
+                  .setValue(
+                    'Você selecionou a opção de Mensagem. Para isso você poderá personalizar toda a sua mensagem neste site através de JSON: https://glitchii.github.io/embedbuilder/ , tendo em conta as variáveis do RSS disponíveis em nossa documentação.',
+                  )
+                  .setRequired(true)
+                  .setPlaceholder(rssFeed.message)
+                  .setStyle(discord.TextInputStyle.Paragraph);
+                const modal = new discord.ModalBuilder()
+                  .setCustomId('mensagemRSS')
+                  .setTitle('Alterar Mensagem')
+                  .setComponents(
+                    new discord.ActionRowBuilder().addComponents(mensagemInput),
+                  );
+
+                await i.showModal(modal);
+                const enviada = await interaction
+                  .awaitModalSubmit({
+                    time: 3600000,
+                    filter: i =>
+                      i.user.id === interaction.user.id &&
+                      i.customId === 'mensagemRSS',
+                  })
+                  .catch(error => {
+                    if (error) return null;
+                  });
+
+                if (enviada) {
+                  const mensagem =
+                    enviada.fields.getTextInputValue('mensagemInput');
+                  enviada.reply('Atualizado com sucesso!');
+                  try {
+                    const pe = JSON.parse(mensagem);
+                    interaction.channel.send(pe).catch(err => {
+                      if (err) return 0;
+                    });
+                    rssFeed.message = mensagem;
+                    doc.save();
+                  } catch (err) {
+                    return interaction.channel.send(
+                      'Seu JSON é inválido para minha inteligência, veja se você copiou tudo certo!',
+                    );
+                  }
+                }
+                break;
+              }
             }
           });
         });

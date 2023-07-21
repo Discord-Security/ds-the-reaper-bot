@@ -15,7 +15,7 @@ module.exports = async (client, interaction) => {
 
   const guild = await client.db.Guilds.findOne({ _id: id });
 
-  if (guild) {
+  if (!guild) {
     guild.approved = true;
     guild.save();
   } else {

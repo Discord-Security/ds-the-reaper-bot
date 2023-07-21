@@ -120,20 +120,19 @@ module.exports = {
           });
         }
         collector.on('collect', i => {
-          if (i.user.id === interaction.member.id) {
-            if (i.customId === buttonname + 'next') {
-              i.deferUpdate();
-              Search(page + 1);
-            }
-            if (i.customId === buttonname + 'prev') {
-              i.deferUpdate();
-              Search(page - 1);
-            }
-          } else {
-            i.editReply({
+          if (i.user.id !== interaction.member.id)
+            return i.editReply({
               content: 'Consulta inválida.',
               ephemeral: true,
             });
+
+          if (i.customId === buttonname + 'next') {
+            i.deferUpdate();
+            Search(page + 1);
+          }
+          if (i.customId === buttonname + 'prev') {
+            i.deferUpdate();
+            Search(page - 1);
           }
         });
         break;

@@ -32,28 +32,27 @@ module.exports = async (client, interaction) => {
     member.roles.remove('1055623367937507438');
 
     if (guild && guild.roleId && guild.roleId !== '') {
-      member.roles.add(guild.roleId);
-    } else {
-      const server = client.guilds.cache.get(argumentos[2]);
-
-      interaction.guild.roles
-        .create({
-          name: server ? server.name : 'Reaper não detectou?',
-          color: '#5d83b3',
-          reason: 'Novo cargo para registro do utilizador',
-        })
-        .then(role => {
-          member.roles.add(role);
-          if (guild) {
-            guild.roleId = role.id;
-            guild.save();
-          }
-          if (!guild)
-            new client.db.Guilds({
-              _id: argumentos[2],
-              roleId: role.id,
-            }).save();
-        });
+      return member.roles.add(guild.roleId);
     }
+    const server = client.guilds.cache.get(argumentos[2]);
+
+    interaction.guild.roles
+      .create({
+        name: server ? server.name : 'Reaper não detectou?',
+        color: '#5d83b3',
+        reason: 'Novo cargo para registro do utilizador',
+      })
+      .then(role => {
+        member.roles.add(role);
+        if (guild) {
+          guild.roleId = role.id;
+          guild.save();
+        }
+        if (!guild)
+          new client.db.Guilds({
+            _id: argumentos[2],
+            roleId: role.id,
+          }).save();
+      });
   }
 };

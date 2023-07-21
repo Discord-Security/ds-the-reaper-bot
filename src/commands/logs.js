@@ -77,17 +77,15 @@ module.exports = {
     };
 
     const logsKey = logs[tipo];
+    interaction.reply({ content: message });
 
     if (doc) {
       doc.logs[logsKey] = ativado ? canal.id : '';
-      doc.save();
-    } else {
-      new client.db.Guilds({
-        _id: interaction.guild.id,
-        logs: { [logsKey]: ativado ? canal.id : '' },
-      }).save();
+      return doc.save();
     }
-
-    interaction.reply({ content: message });
+    return new client.db.Guilds({
+      _id: interaction.guild.id,
+      logs: { [logsKey]: ativado ? canal.id : '' },
+    }).save();
   },
 };
