@@ -79,12 +79,12 @@ module.exports = {
     const logsKey = logs[tipo];
 
     if (doc) {
-      doc.logs[logsKey] = ativado === true ? canal.id : '';
+      doc.logs[logsKey] = ativado ? canal.id : '';
       doc.save();
     } else {
       new client.db.Guilds({
         _id: interaction.guild.id,
-        logs: { [logsKey]: ativado === true ? canal.id : '' },
+        logs: { [logsKey]: ativado ? canal.id : '' },
       }).save();
     }
 
