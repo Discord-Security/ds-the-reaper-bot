@@ -22,12 +22,11 @@ module.exports = {
   async execute(interaction, client) {
     const member = interaction.options.getMember('usuário');
     const reason = 'Removido por: ' + interaction.member.user.tag;
-    if (!member) {
+    if (!member)
       return interaction.reply({
         content:
           'O membro que foi dado não é válido, você deve mencionar alguém dentro do servidor.',
       });
-    }
     await member.timeout(null, reason).catch(() => {
       return interaction.reply({
         content: 'É impossível realizar tal ação contra este usuário.',

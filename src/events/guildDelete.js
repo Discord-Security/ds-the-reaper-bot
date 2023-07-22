@@ -29,6 +29,19 @@ module.exports = async (client, guild) => {
     const reaper = await client.db.Reaper.findOne({ _id: '1' });
     if (reaper) {
       if (reaper.databaseExclude.find(item => item._id === guild.id)) {
+        const doc = await client.db.Guilds.findOne({ _id: guild.id });
+        if (doc && doc.roleId) {
+          const role = client.guilds.cache
+            .get('1025774982980186183')
+            .roles.cache.get(doc.roleId);
+          role.members
+            .map(member => {
+              if (member.roles.length > 2) return 0;
+              member.roles.remove('1025774982980186186');
+              return member.roles.add('1055623367937507438');
+            })
+          role.remove();
+        }
         await client.db.Guilds.deleteOne({ _id: guild.id });
         reaper.databaseExclude.pull({ _id: guild.id });
         reaper.save();
