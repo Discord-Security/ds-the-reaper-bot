@@ -54,7 +54,8 @@ module.exports = {
           inline: true,
         },
       )
-      .setThumbnail(interaction.guild.iconURL());
+      .setThumbnail(interaction.guild.iconURL())
+      .setImage('https://i.imgur.com/n6kzJ4x.png');
     client.channels.cache.get(client.canais.logs).send({
       embeds: [embed],
     });
