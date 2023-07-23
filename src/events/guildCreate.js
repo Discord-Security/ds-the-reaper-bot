@@ -62,7 +62,7 @@ module.exports = async (client, guild) => {
       const row = new discord.ActionRowBuilder().setComponents(
         new discord.ButtonBuilder()
           .setStyle(discord.ButtonStyle.Link)
-          .setURL('https://discord.gg/TnvvwUStHK')
+          .setURL('https://discord.reaperbot.website')
           .setLabel('Participar!')
           .setEmoji('1041100297629597836'),
       );
