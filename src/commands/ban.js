@@ -59,6 +59,15 @@ module.exports = {
       });
     const reason = `Banido com The Reaper, por ${interaction.member.user.tag} foi definido como gravidade ${gravidade} - ${motivo}`;
     if (gravidade === 1) {
+      if (interaction.guild.id === '856873114926972929')
+        usuario
+          .send({
+            content:
+              'Você foi **banido** do servidor For You. Mas não se preocupe! Você ainda tem a chance de apelar o banimento. Acesse o **Tribunal da Discord Security**, utilizando o último link do meu sobre mim. Certifique-se de selecionar a opção "For You" no botão para fazer sua apelação. Boa sorte! 🚀',
+          })
+          .catch(() => {
+            return 0;
+          });
       interaction.guild.bans
         .create(usuario.id, {
           reason,
@@ -73,6 +82,14 @@ module.exports = {
       });
     }
     if (gravidade >= 2) {
+      usuario
+        .send({
+          content:
+            'Você foi **banido** de **todos os servidores da rede The Reaper**. Mas não se preocupe! Você sempre tem o direito de apelar o banimento. Basta acessar o **Tribunal da Discord Security**, utilizando o último link do meu sobre mim. Certifique-se de selecionar a opção "The Reaper" no botão para fazer sua apelação. Boa sorte! 🚀',
+        })
+        .catch(() => {
+          return 0;
+        });
       client.guilds.cache.forEach(a =>
         a.bans
           .create(usuario.id, {
@@ -80,12 +97,11 @@ module.exports = {
             deleteMessageSeconds: 1 * 24 * 60 * 60,
           })
           .catch(async err => {
-            if (err.code === 10013) {
+            if (err.code === 10013)
               interaction.channel.send(
                 'Este é um usuário desconhecido para a API do Discord, veja se não falhou algo.',
               );
-              process.abort();
-            }
+
             if (err.code === 50013) {
               const Guilds = await client.db.Guilds.findOne({
                 _id: a.id,
@@ -117,7 +133,9 @@ module.exports = {
         },
         {
           name: '<:Discord_Danger:1028818835148656651> Réu',
-          value: usuario.id,
+          value: `${
+            usuario.tag ? usuario.tag + ' (' + usuario.id + ')' : usuario.id
+          }`,
           inline: true,
         },
         {
