@@ -43,13 +43,13 @@ module.exports = {
     switch (subcommand) {
       case 'info': {
         const banInfo = await interaction.guild.bans.fetch(id).catch(() => {
-          interaction.reply('Não foi encontrado um banimento ou usuário.');
+          interaction.reply('Não foi encontrado um banimento nesse usuário.');
         });
 
         const BanInfoEmbed = new discord.EmbedBuilder()
           .setTimestamp()
           .setColor(client.cor)
-          .setThumbnail(banInfo.user.displayAvatarURL({ dynamic: true }))
+          .setThumbnail('https://i.imgur.com/UqfCDzg.jpeg')
           .setTitle(`Informações do Banimento`)
           .addFields(
             {
