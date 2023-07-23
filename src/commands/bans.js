@@ -103,7 +103,7 @@ module.exports = {
 
         const list = Object.keys(banIdObj).join('\n');
         const lista = await new discord.AttachmentBuilder(Buffer.from(list), {
-          name: 'bans.txt',
+          name: 'bansExport.txt',
         });
         await interaction.reply({
           content: `**${completeBanIdList.length} usuários foram banidos do seu servidor:**`,
@@ -150,28 +150,54 @@ module.exports = {
           return interaction.reply({
             content: 'Não encontrei nenhum dado para o motivo filtrado.',
           });
-        const emb = new discord.EmbedBuilder()
-          .setTimestamp()
-          .setTitle('Banimentos filtrados por: ' + motivo)
-          .setColor(client.cor)
-          .setDescription(
-            `Tag - ID - Motivo\n\n${bans
-              .map(
-                b =>
-                  `${b.user.tag} - ${b.user.id} - ${b.reason
-                    .replace(motivo, '**' + motivo + '**')
-                    .replace(
-                      /Banido com The Reaper[\s\S]*?gravidade\s*([1-2]) - /gm,
-                      '',
-                    )}`,
-              )
-              .join('\n')}`,
-          );
-        interaction.reply({
+
+        if (bans.length <= 7) {
+          return interaction.reply({
+            content: `No total são ${bans.length} banidos pelo motivo filtrado:`,
+            embeds: [
+              new discord.EmbedBuilder()
+                .setTimestamp()
+                .setTitle('Banimentos filtrados por: ' + motivo)
+                .setColor(client.cor)
+                .setDescription(
+                  `Tag - ID - Motivo\n\n${bans
+                    .map(
+                      b =>
+                        `${b.user.tag} - ${b.user.id} - ${b.reason
+                          .replace(motivo, '**' + motivo + '**')
+                          .replace(
+                            /Banido com The Reaper[\s\S]*?gravidade\s*([1-2]) - /gm,
+                            '',
+                          )}`,
+                    )
+                    .join('\n')}`,
+                ),
+            ],
+          });
+        }
+        return interaction.reply({
           content: `No total são ${bans.length} banidos pelo motivo filtrado:`,
-          embeds: [emb],
+          files: [
+            new discord.AttachmentBuilder(
+              Buffer.from(
+                bans
+                  .map(
+                    b =>
+                      `${b.user.tag} - ${b.user.id} - ${b.reason
+                        .replace(motivo, '**' + motivo + '**')
+                        .replace(
+                          /Banido com The Reaper[\s\S]*?gravidade\s*([1-2]) - /gm,
+                          '',
+                        )}`,
+                  )
+                  .join('\n'),
+              ),
+              {
+                name: 'bansSearch.txt',
+              },
+            ),
+          ],
         });
-        break;
       }
     }
   },
