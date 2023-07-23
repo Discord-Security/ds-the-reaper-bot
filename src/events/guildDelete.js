@@ -34,13 +34,14 @@ module.exports = async (client, guild) => {
           const role = client.guilds.cache
             .get('1025774982980186183')
             .roles.cache.get(doc.roleId);
-          role.members
-            .map(member => {
+          if (!role) return 0;
+          if (role.members)
+            role.members.map(member => {
               if (member.roles.length > 2) return 0;
               member.roles.remove('1025774982980186186');
               return member.roles.add('1055623367937507438');
-            })
-          role.remove();
+            });
+          role.delete();
         }
         await client.db.Guilds.deleteOne({ _id: guild.id });
         reaper.databaseExclude.pull({ _id: guild.id });
