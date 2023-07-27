@@ -16,8 +16,24 @@ module.exports = {
           'en-US': 'id_server',
         })
         .setDescription('Identifique o ID do servidor')
-        .setRequired(false),
+        .setRequired(false)
+        .setAutocomplete(true),
     ),
+  async autocomplete(interaction, client) {
+    const focusedValue = interaction.options.getFocused(true);
+    const choices = await Promise.all(
+      client.guilds.cache
+        .filter(sv => sv.id.includes(focusedValue.value))
+        .map(async choice => ({
+          name: await client.guilds
+            .fetch(choice.id)
+            .then(guild => guild.name.slice(0, 25)),
+          value: choice.id,
+        })),
+    );
+    console.log(choices.slice(0, 25));
+    await interaction.respond(choices.slice(0, 25));
+  },
   async execute(interaction, client) {
     const guild = client.guilds.cache.get(
       interaction.options.getString('id_server') || interaction.guild.id,
@@ -56,7 +72,7 @@ module.exports = {
             ).size
           } / ${
             guild.channels.cache.filter(
-              c => c.type === discord.ChannelType.GuildText,
+              c => c.type === discord.ChannelType.GuildVoice,
             ).size
           }`,
           inline: true,
