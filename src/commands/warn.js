@@ -60,7 +60,7 @@ module.exports = {
         },
         {
           name: '<:Discord_Danger:1028818835148656651> Réu',
-          value: membro.id,
+          value: `${membro.user.tag} (${membro.id})`,
           inline: true,
         },
         {

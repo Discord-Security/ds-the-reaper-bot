@@ -133,9 +133,7 @@ module.exports = {
         },
         {
           name: '<:Discord_Danger:1028818835148656651> Réu',
-          value: `${
-            usuario.tag ? usuario.tag + ' (' + usuario.id + ')' : usuario.id
-          }`,
+          value: usuario.tag ? `${usuario.tag} (${usuario.id})` : usuario.id,
           inline: true,
         },
         {
