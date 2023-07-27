@@ -31,7 +31,6 @@ module.exports = {
           value: choice.id,
         })),
     );
-    console.log(choices.slice(0, 25));
     await interaction.respond(choices.slice(0, 25));
   },
   async execute(interaction, client) {
