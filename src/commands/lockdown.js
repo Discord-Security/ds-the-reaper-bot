@@ -60,18 +60,17 @@ module.exports = {
                 .has(discord.PermissionFlagsBits.SendMessages) === true,
           )
           .map(channel => {
-            let motivo = interaction.options.getString('motivo') || null;
-            motivo !== null
-              ? client.channels.cache.get(channel.id).send({
-                  embeds: [
-                    new discord.EmbedBuilder()
-                      .setColor(client.cor)
-                      .setTitle('Lockdown no servidor globalmente!')
-                      .setDescription(motivo)
-                      .setThumbnail('https://i.imgur.com/UhN88X9.png'),
-                  ],
-                })
-              : (motivo = null);
+            const motivo = interaction.options.getString('motivo') || null;
+            if (motivo !== null)
+              client.channels.cache.get(channel.id).send({
+                embeds: [
+                  new discord.EmbedBuilder()
+                    .setColor(client.cor)
+                    .setTitle('Lockdown no servidor globalmente!')
+                    .setDescription(motivo)
+                    .setThumbnail('https://i.imgur.com/UhN88X9.png'),
+                ],
+              });
             guild.channelsLockdown.push(channel.id);
             return channel.permissionOverwrites.set(
               [

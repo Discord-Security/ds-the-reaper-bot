@@ -42,11 +42,14 @@ module.exports = {
           );
         });
     } else
-      return interaction.channel.permissionOverwrites.set([
-        {
-          id: interaction.guild.id,
-          deny: [discord.PermissionFlagsBits.SendMessages],
-        },
-      ]);
+      return interaction.channel.permissionOverwrites.set(
+        [
+          {
+            id: interaction.guild.id,
+            deny: [discord.PermissionFlagsBits.SendMessages],
+          },
+        ],
+        'Lock ativado por ' + interaction.user.tag,
+      );
   },
 };
