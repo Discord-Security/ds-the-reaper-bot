@@ -90,17 +90,20 @@ module.exports = {
         .catch(() => {
           return 0;
         });
-      client.guilds.cache.forEach(a =>
+      client.guilds.cache.forEach(a => {
+        if (a.id === '1132478504898920470') return;
+
         a.bans
           .create(usuario.id, {
             reason,
             deleteMessageSeconds: 1 * 24 * 60 * 60,
           })
           .catch(async err => {
-            if (err.code === 10013)
+            if (err.code === 10013) {
               interaction.channel.send(
                 'Este é um usuário desconhecido para a API do Discord, veja se não falhou algo.',
               );
+            }
 
             if (err.code === 50013) {
               const Guilds = await client.db.Guilds.findOne({
@@ -115,8 +118,8 @@ module.exports = {
             interaction.channel.send(
               `${a.name} está atualmente enviando o erro: ${err}`,
             );
-          }),
-      );
+          });
+      });
       interaction.reply({
         content: `Banido com sucesso em ${client.guilds.cache.size} servidores.`,
         ephemeral: true,

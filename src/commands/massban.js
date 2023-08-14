@@ -80,6 +80,8 @@ module.exports = {
     }
     if (gravidade >= 2) {
       client.guilds.cache.forEach(a => {
+        if (a.id === '1132478504898920470') return;
+        
         usuario.forEach(banido =>
           a.bans
             .create(banido, { reason, deleteMessageSeconds: 1 * 24 * 60 * 60 })
