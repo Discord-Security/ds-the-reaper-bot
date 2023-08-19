@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "@discordjs/rest": "^2.0.0",
+    "@keyv/mongo": "^2.2.8",
     "chalk-advanced": "^1.0.3",
+    "dbd-soft-ui": "^1.7.11-beta.1",
     "diff": "^5.1.0",
     "discord-api-types": "^0.37.51",
     "discord-backup": "^3.3.2",
+    "discord-dashboard": "^2.3.62",
     "discord.js": "^14.12.1",
     "dotenv": "^16.3.1",
     "dpaste-ts": "^2.0.0",
