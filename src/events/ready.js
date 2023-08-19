@@ -54,7 +54,7 @@ module.exports = async client => {
     }
   })();
   client.user.setPresence({
-    activities: [{ name: 'Tóxicos? Aqui não!', type: 3 }],
+    activities: [{ name: 'Tóxicos? Aqui não!', type: discord.ActivityType.Custom }],
     status: 'dnd',
   });
   const not = await client.db.Reaper.findOne({ _id: '1' });
