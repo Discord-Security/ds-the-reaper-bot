@@ -19,6 +19,7 @@ module.exports = async client => {
     ownerIDs: ['354233941550694400'],
     useThemeMaintenance: true,
     useTheme404: true,
+    acceptPrivacyPolicy: true,
     bot: client,
     theme: SoftUI({
       storage: Handler,
