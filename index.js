@@ -17,7 +17,6 @@ const client = new discord.Client({
 
 client.cor = '#ff0000';
 client.db = require('./database');
-require('./dashboard.js')(client);
 client.canais = {
   logs: '1025780160437432330',
   serverLogs: '1058047241346105465',
