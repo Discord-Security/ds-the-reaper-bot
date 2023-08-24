@@ -4,8 +4,8 @@ module.exports = async (client, interaction) => {
       return require('../button/approve')(client, interaction);
     if (interaction.customId.startsWith('reject'))
       return require('../button/reject')(client, interaction);
-    if (interaction.customId.startsWith('Registrar'))
-      return require('../button/registrar')(client, interaction);
+    if (interaction.customId.startsWith('Register'))
+      return require('../button/register')(client, interaction);
     else
       try {
         require('../button/' + interaction.customId)(client, interaction);

@@ -79,7 +79,7 @@ module.exports = {
         const server = client.guilds.cache.get(id);
 
         const approve = new discord.ButtonBuilder()
-          .setCustomId(`Registrar ${member.id} ${id}`)
+          .setCustomId(`Register ${member.id} ${id}`)
           .setLabel('Registrar')
           .setStyle(2)
           .setEmoji('1026116735759302727');
