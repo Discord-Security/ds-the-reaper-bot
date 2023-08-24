@@ -2,10 +2,10 @@ const discord = require('discord.js');
 
 module.exports = {
   data: new discord.SlashCommandBuilder()
-    .setName('pause_invite')
+    .setName('pause_invites')
     .setNameLocalizations({
-      'pt-BR': 'pausar_convite',
-      'en-US': 'pause_invite',
+      'pt-BR': 'pausar_convites',
+      'en-US': 'pause_invites',
     })
     .setDescription('Pause temporariamente os convites do servidor.')
     .setDefaultMemberPermissions(discord.PermissionFlagsBits.ManageGuild)
