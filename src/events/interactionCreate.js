@@ -57,6 +57,14 @@ module.exports = async (client, interaction) => {
         .catch(err => {
           if (err) return 0;
         });
+      console.log(
+        `${ChalkAdvanced.green('>')} ${ChalkAdvanced.gray(
+          '/' + interaction.commandName,
+          interaction.options._hoistedOptions.map(a => {
+            return a.name + ':' + a.value;
+          }),
+        )}`,
+      );
       command.execute(interaction, client);
     } catch (err) {
       if (err) console.error(err);
