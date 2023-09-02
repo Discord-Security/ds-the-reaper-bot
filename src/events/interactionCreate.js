@@ -1,3 +1,5 @@
+const { ChalkAdvanced } = require('chalk-advanced');
+
 module.exports = async (client, interaction) => {
   if (interaction.isButton()) {
     if (interaction.customId.startsWith('approve'))
