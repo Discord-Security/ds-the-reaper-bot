@@ -4,10 +4,13 @@ module.exports = async (client, message) => {
   if (message.guild === null) return;
 
   const doc = await client.db.Guilds.findOne({ _id: message.guild.id });
-  
+
   if (!doc) return new client.db.Guilds({ _id: message.guild.id }).save();
 
-  if (doc.channelsAutopublish.includes(message.channel.id)) {
+  if (
+    doc.channelsAutopublish.includes(message.channel.id) &&
+    message.content !== '<@&813074590456741888>'
+  ) {
     message.crosspost().catch(err => {
       if (err) return 0;
     });

@@ -1,5 +1,4 @@
 const discord = require('discord.js');
-const schedule = require('node-schedule');
 require('dotenv').config();
 
 const client = new discord.Client({
@@ -76,48 +75,6 @@ process.on('uncaughtException', async error => {
   try {
     client.channels.cache.get(client.canais.errors).send({ files: [lista] });
   } catch {}
-});
-
-schedule.scheduleJob('00 16 * * 1', async function () {
-  const part = await client.db.Guilds.find({
-    partneractivated: true,
-  });
-  part.map(g => {
-    let i = 0;
-    return part.forEach(p => {
-      setTimeout(async function () {
-        if (p.id === g.id) return;
-        if (!g.partner.message || g.partner.message.length < 1) {
-          const doc = await client.db.Guilds.findOne({ _id: g._id });
-          if (doc) {
-            client.channels.cache.get(client.canais.strikes).send({
-              content: `Servidor ${g._id} falhou ao enviar mensagem de parceria, mensagem sem conteúdo ou inválida. \n\nPara tentar reativar sem nenhum erro, cumpra o que o erro peça e use novamente o comando de /parceria canal`,
-            });
-            doc.partneractivated = false;
-            return doc.save();
-          }
-        }
-        client.channels.cache
-          .get(p.partner.channel)
-          .send({
-            content:
-              g.partner.message.replace('@here', '').replace('@everyone', '') +
-              `\n\n<@&${p.partner.role}>`,
-          })
-          .catch(async err => {
-            if (err) console.log(err);
-            const doc = await client.db.Guilds.findOne({ _id: p._id });
-            if (doc) {
-              client.channels.cache.get(client.canais.strikes).send({
-                content: `Servidor ${p._id} falhou ao enviar mensagem de parcerias: \n\n\`\`\`${err}\`\`\`\n\nPara tentar reativar sem nenhum erro, cumpra o que o erro peça e use novamente o comando de /parceria canal`,
-              });
-              doc.partneractivated = false;
-              doc.save();
-            }
-          });
-      });
-    }, 15000 * i++);
-  });
 });
 
 const boilerplateComponents = async () => {

@@ -80,12 +80,6 @@ const guildSchema = new Schema({
   backup: {
     password: String,
   },
-  partner: {
-    channel: String,
-    message: String,
-    role: String,
-  },
-  partneractivated: { type: Boolean, default: false },
   partnerWarning: {
     activated: { type: Boolean, default: false },
     channel: String,
