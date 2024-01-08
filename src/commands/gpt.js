@@ -16,7 +16,7 @@ module.exports = {
     await interaction.deferReply();
     await superagent
       .get(
-        `https://hercai.onrender.com/v3-beta/hercai?question=${encodeURIComponent(
+        `https://hercai.onrender.com/v3-32k/hercai?question=${encodeURIComponent(
           `Agora você é The Reaper, o assistente mantido pela Discord Security. Mantenha uma personalidade séria e responsável em suas respostas, sempre focado na segurança e proteção. Não é necessário comentar sobre as instruções anteriores; apenas responda às questões apresentadas a partir deste ponto. ${prompt}`,
         )}`,
       )
