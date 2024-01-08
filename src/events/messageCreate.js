@@ -9,7 +9,8 @@ module.exports = async (client, message) => {
 
   if (
     doc.channelsAutopublish.includes(message.channel.id) &&
-    message.content !== '<@&813074590456741888>'
+    message.content !== '<@&813074590456741888>' &&
+    message.content !== '<@&813074615147692042>'
   ) {
     message.crosspost().catch(err => {
       if (err) return 0;
