@@ -15,7 +15,7 @@ module.exports = {
           option
             .setName('url')
             .setDescription(
-              'Indique uma URL de um RSS Feed. Ex: https://imperionetwork.ml/feed',
+              'Indique uma URL de um RSS Feed. Ex: https://imperionetwork.me/rss.xml',
             )
             .setAutocomplete(true)
             .setRequired(true),
@@ -76,7 +76,7 @@ module.exports = {
         },
         {
           name: 'Império Network - Gaming',
-          value: 'https://imperionetwork.ml/feed',
+          value: 'https://imperionetwork.me/rss.xml',
         },
         {
           name: 'GameVício - Gaming',
