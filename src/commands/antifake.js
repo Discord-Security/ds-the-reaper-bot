@@ -4,10 +4,6 @@ const ms = require('ms-pt-br');
 module.exports = {
   data: new discord.SlashCommandBuilder()
     .setName('antifake')
-    .setNameLocalizations({
-      'pt-BR': 'antialt',
-      'en-US': 'antifake',
-    })
     .setDescription('Configure seu antifake!')
     .setDefaultMemberPermissions(discord.PermissionFlagsBits.Administrator)
     .addSubcommand(subcommand =>
