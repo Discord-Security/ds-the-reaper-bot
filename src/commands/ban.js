@@ -82,6 +82,14 @@ module.exports = {
       });
     }
     if (gravidade >= 2) {
+      if (
+        interaction.guild.id === '856873114926972929' &&
+        motivo === "Fazer spam, flood, divulgação ou propaganda não autorizada"
+      ) {
+        client.channels.cache
+          .get("856886279693271070")
+          .send("https://files.catbox.moe/t964m7.mp4");
+      }
       usuario
         .send({
           content:
