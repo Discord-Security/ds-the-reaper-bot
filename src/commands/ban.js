@@ -123,9 +123,6 @@ module.exports = {
                 content: `<@${mention}>, seu servidor ${a.name} me rejeitou o uso de permissões administrativas, por favor re-coloque a permissão administrativa imediatamente, se você ama ter um servidor seguro.`,
               });
             }
-            interaction.channel.send(
-              `${a.name} está atualmente enviando o erro: ${err}`,
-            );
           });
       });
       interaction.reply({
