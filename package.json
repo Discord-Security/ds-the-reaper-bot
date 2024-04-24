@@ -13,21 +13,21 @@
     "@discordjs/rest": "^2.2.0",
     "chalk-advanced": "^1.0.7",
     "diff": "^5.2.0",
-    "discord-api-types": "^0.37.74",
+    "discord-api-types": "^0.37.81",
     "discord-backup": "^3.3.2",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "dpaste-ts": "^3.0.0",
     "img-url-to-imgur": "^1.0.0",
-    "mongoose": "^8.2.2",
+    "mongoose": "^8.3.2",
     "mongoose-paginate-v2": "^1.8.0",
     "ms-pt-br": "^2.1.4",
     "node-schedule": "^2.1.0",
     "rss-parser": "^3.13.0",
-    "superagent": "^8.1.2"
+    "superagent": "^9.0.1"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
+    "eslint": "^9.1.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-semistandard": "^17.0.0",
     "prettier": "3.2.5"
